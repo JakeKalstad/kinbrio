@@ -1,0 +1,5 @@
+**/.DS_Store
+models/*.bin
+models/*.gguf
+**/.todo
+results_modified/*

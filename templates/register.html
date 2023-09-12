@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}Register{% endblock %}
+{% block description %}Register to take you business to it's fullest potential{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="section">
+    <div class="heading_div">
+      <h1>Register <u>Securely</u> Using Your <a target="_blank" href="https://matrix.org/about/">Matrix</a> Account
+      </h1>
+      <h3>Don't Already Have Your Own Federated Matrix Account?</h3>
+      <h4>The simplest way to sign up a Matrix account is to use <a target="_blank"
+          href="https://app.element.io/">Element</a>, a web-based client.
+        A great application to immediately start chatting, calling and screen sharing and will be fully integrated
+        immediately with Kinbrio to receive any notifications and alerts you need.
+        Go to <a target="_blank" class="button" href="https://app.element.io/">app.element.io</a> to get started - this will allow you
+        to sign up for a
+        new account on Matrix.org and register here using your new account, securely!</h4>
+    </div>
+    <div class="row justified">
+      <div class="content">
+        <form id="register_form">
+          {% for choice in choices %}
+          <a class="button" href="{{choice.url}}">{{choice.display}}</a>
+          {% endfor %}
+        </form>
+      </div>
+    </div>
+    <div class="row justified">
+      <p>What the hell is <a target="_blank" href="https://matrix.org/about/"><u>Matrix</u></a> and <a target="_blank"
+          href="/why_federate">why do I care</a>?</p>
+    </div>
+  </div>
+</div>
+</div>
+<script>
+  window.addEventListener('load', function () {
+    post_form("register_form", "/register", data => {
+      if (data.get("secret") != data.get("confirm_password")) {
+        document.getElementById("error").innerHTML = "Passwords don't match";
+        return false
+      }
+      return data
+    });
+  })
+</script>
+{% endblock %}

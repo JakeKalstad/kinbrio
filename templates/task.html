@@ -1,0 +1,101 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if task.name.len() > 0 %}{{task.name}}{%else%}Add Task{% endif %}{% endblock %}
+{% block description %}{{task.description}}{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justified">
+    <a href="/project/{{task.project_key}}">Back To Project</a>
+    <div class="backed col-sm-12 col-md-12 col-lg-12">
+      <h1>Task {{task.name}}</h1>
+      {% if task.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+      <a class="button center" href="/note/add/Task/{{task.key}}">➕ Add Note</a>
+      <a class="button center" href="/file/add/Task/{{task.key}}">➕ Attach File</a>
+      <button id="delete" class="delete_button center">🗑️ Delete</button>
+      {% endif %}
+      <div class="row justified">
+        <div class="content">
+          <form id="add_task_form">
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" placeholder="Name" value="{{task.name}}" />
+
+            <label for="description">Description</label>
+            <textarea name="description" id="description" placeholder="Description"
+              value="{{task.description}}">{{task.description}}</textarea>
+            <label for="tags">Tags</label>
+            <input type="text" name="tags" id="tags" placeholder="Tags,seperated,by,commas" value="{{task.tags}}" />
+            <label>Select Status</label>
+            <select name="status">
+              {% for status in TaskStatus::iter() %}
+              <option value='{{status.to_string().replace(" ", "")}}' {% if status==task.status %}selected{% endif %}>
+                {{status.to_string()}}</option>
+              {% endfor %}
+            </select>
+            <label>Assign</label>
+            <select name="assignee_key">
+              <option value='{{uuid::Uuid::nil()}}' {% if task.assignee_key==uuid::Uuid::nil() %}selected{% endif %}>
+                Unassigned</option>
+              {% for u in users %}
+              <option value='{{u.key}}' {% if task.assignee_key==u.key %}selected{% endif %}>{{u.to_string()}}</option>
+              {% endfor %}
+            </select>
+            <label for="estimated_quarter_days">Estimated Quarter Work Days</label>
+            <input type="number" id="estimated_quarter_days" name="estimated_quarter_days" min="1" max="1000"
+              value="{{task.estimated_quarter_days}}">
+            <label for="start">Start Date</label>
+            <input id="start" type="date" name="start" />
+
+            <label for="due">Due Date</label>
+            <input id="due" type="date" name="due" />
+
+            <input type="submit" class="add_button"
+              value="{% if task.name.len() == 0 %}Create Task!{%else%}Update Task{% endif %}" />
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', function () {
+      {% if !task.key.is_nil() %}
+      send_delete("delete", "/task/{{task.key}}", (deleted, res) => {
+        if (deleted) {
+          window.location.href = `/project/{{task.project_key}}`
+        }
+      })
+      {% endif %}
+      let due = parseInt("{{task.due}}");
+      document.getElementById("due").value = (due == 0 ? new Date() : new Date(due * 1000)).toISOString().split('T')[0]
+      let start = parseInt("{{task.start}}");
+      document.getElementById("start").value = (start == 0 ? new Date() : new Date(start * 1000)).toISOString().split('T')[0]
+      console.dir({ y: new Date(start * 1000), z: new Date(start) })
+      post_form("add_task_form", "/task", data => {
+        let key = "{{task.key}}"
+        data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+        data.organization_key = "{{user.organization_key}}"
+        data.owner_key = "{{user.key}}"
+        data.project_key = "{{task.project_key}}"
+        data.estimated_quarter_days = num_from_string(data.estimated_quarter_days)
+        data.start = Math.floor(new Date(data.start).getTime() / 1000);
+        data.due = Math.floor(new Date(data.due).getTime() / 1000);
+        data.name = data.name || "";
+        data.status = data.status;
+        data.assignee_key = data.assignee_key;
+        data.description = data.description || "";
+        data.tags = data.tags || "";
+        data.created = data.created || 0;
+        data.updated = data.updated || 0;
+        return data;
+      }, (response_text) => {
+        let object = JSON.parse(response_text);
+        window.location.href = `/task/${object.key}`
+      });
+    })
+  </script>
+  {% endblock %}

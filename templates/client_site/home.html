@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+{% block description %}{{description}}{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div style="text-align: center">
+    <img  decoding="async" loading="lazy" src="/fs/images/logo_transparent.png" width="320px" class="logo" alt="Kinbrio: working better together">
+</div>
+<div
+    style="background-color:rgba(175, 255, 255, 0.5); text-align: center; padding: 0 3% 0 3%; border-top: 2px solid #ffff008f;border-bottom: 2px solid #ffff008f;">
+    <h1 style="text-decoration: underline; font-weight: bold;">{{header}}</h1>
+    <h2>{{subheader}}</h2>
+    <h3>{{description}}</h3>
+</div>
+
+<div class="row" style="justify-content: center; text-align: center;">
+    <a class="button" href="/login">Login</a>
+    <a class="button" href="/register">Sign Up!</a>
+</div>
+<div class="container">
+    <div class="row" style="justify-content: center;">
+        <div class="card flex-center col-sm-12 col-md-12 col-lg-12"
+            style="justify-content: center; text-align: center; max-width: 90%;">
+            <p><b>Efficient Communication at Your Fingertips</b></p>
+            <hr />
+            <p>Communication is the lifeblood of any organization, and at Kinbrio, we take it seriously. Our platform
+                offers
+                real-time communication with voice, video, and screen sharing capabilities through the flexible Matrix
+                protocol.
+                Say goodbye to being tied to a single provider – with Matrix, you have the freedom to choose the web and
+                desktop
+                clients that best suit your preferences.</p>
+        </div>
+        <div class="row" style="justify-content: center;">
+            {% for blk in blocks %}
+            <div class=" col-sm-12 col-md-6 col-lg-3 flex-center" style="justify-content: center; text-align: center">
+                <div class="card">
+                    <p><img  decoding="async" loading="lazy" src="{{blk.img}}" width=64 height=64/></p>
+                    <p><b>{{blk.title}}</b></p>
+                    <hr />
+                    <p>{{blk.content}}</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}

@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+{% block description %}User Dashboard{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="backed col-sm-12 col-md-12 col-lg-12">
+    <p>
+    <h3>{{entity.name}}</a></h3>
+    </p> 
+    <div class="tabbed">
+            {% for invoice in invoices %}
+                <div class="row white-backed">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                         <span style="font-size: large; font-weight: bold; color: rgba(0, 100, 0, 0.726)">${{invoice.amount}}</span>
+                          <span style="font-size: large; font-weight: bold;">{{invoice.status.as_ref().expect("status exists")}}</span>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                         <span><b>Due Date</b> {{invoice.due_at.as_ref().expect("due exists")}}</span> 
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <a class="button" href="https://app.akaunting.com/{{invoice.company_id}}/sales/invoices/{{invoice.id}}">View Invoice</a>
+                    </div>
+                </div>
+            {% endfor %}
+    </div>
+</div>
+{% endblock %}

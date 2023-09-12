@@ -1,0 +1,86 @@
+{% extends "layout.html" %}
+
+{% block title %}Manage Organization{% endblock %}
+{% block description %}Screen to manage your internal organization settings{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justified">
+        <div class+="content">
+            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                <h1>Organization Configuration</h1>
+                <div class="row justified">
+                    <div class+="content">
+                        <form id="organization_form">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" id="name" placeholder="Name" value="{{organization.name}}" />
+
+                            <label for="domain">Domain</label>
+                            <input type="text" name="domain" id="domain" placeholder="acme.com" value="{{organization.domain}}" />
+
+                            <label for="contact_email">Contact Email</label>
+                            <input type="text" name="contact_email" id="contact_email" placeholder="admin@llc.com" value="{{organization.contact_email}}" />
+                            <p>Manage your accounting using <a style="text-decoration: underline;" target="_blank" href="https://akaunting.com/">Akaunting</a> - a free
+                                and open-source online accounting software for small businesses and freelancers.
+                            </p>
+                            <p> <a class="button" href="/akaunting"><img width="128px" height="32"  decoding="async" loading="lazy" alt="Akaunting options" src="/fs/images/akaunting-logo-horizontal.svg"></a>
+                            </p>
+
+                            <label for="description">Description</label>
+                            <input type="text" name="description" id="description" placeholder="Description"
+                                value="{{organization.description}}" />
+
+
+                            <label for="matrix_home_server">Matrix Home Server</label>
+                            <input type="text" name="matrix_home_server" id="matrix_home_server"
+                                placeholder="https://matrix-client.matrix.org"
+                                value="{{organization.matrix_home_server}}" />
+
+                            <label for="matrix_live_support_room_url">Matrix Live Support Room</label>
+                            <input type="text" name="matrix_live_support_room_url" id="matrix_live_support_room_url"
+                                placeholder="https://matrix.to/#/#fake_dummy_support:matrix.org"
+                                value="{{organization.matrix_live_support_room_url}}" />
+
+                            <label for="matrix_general_room_url">Matrix General Room</label>
+                            <input type="text" name="matrix_general_room_url" id="matrix_general_room_url"
+                                placeholder="https://matrix.to/#/#fake_dummy_general:matrix.org"
+                                value="{{organization.matrix_general_room_url}}" />
+                            <div>
+                                <input class="add_button" type="submit" value="Update Organization" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        post_form("organization_form", "/organization", data => {
+            let key = "{{organization.key}}"
+            data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+            data.owner_key = "{{organization.owner_key}}"
+            data.external_accounting_id = data.external_accounting_id ||"{{organization.external_accounting_id}}"
+            data.external_accounting_url = data.external_accounting_url ||"{{organization.external_accounting_url}}"
+            data.name = data.name || "";
+            data.description = data.description || "";
+            data.domain = data.domain || "";
+            data.contact_email = data.contact_email || "";
+            data.created = parseInt("{{organization.created}}") || 0;
+            data.updated = parseInt("{{organization.updated}}") || 0;
+            return data;
+        }, (response_text) => {
+            let object = JSON.parse(response_text);
+            window.location.href = `/organization/${object.key}`
+        });
+    })
+</script>
+
+{% endblock %}

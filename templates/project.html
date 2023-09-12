@@ -1,0 +1,282 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if project.name.len() > 0 %}{{project.name}}{%else%}Create Project{% endif %}{% endblock %}
+{% block description %}{{project.description}} {% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="/fs/css/calendar.js.min.css">
+<script src="/fs/js/calendar.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row justified">
+    <div class="center">
+      <div class="backed col-sm-12 col-md-12 col-lg-12">
+        <h1> {% if project.name.len() > 0 %}{{project.name}}{%else%}Project{% endif %}</h1>
+        {% if project.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+        <a class="button center" target="_blank"
+          href="https://matrix.to/#/!JzZKoqLxgzTnmZkeKm:matrix.org?via=matrix.org">Discussion
+          🗫</a>
+        <a class="button center" href="/task/add/{{project.key}}">➕ Add Task</a>
+        <a class="button center" href="/milestone/add/{{project.key}}">➕ Add Milestone</a>
+        <a class="button center" href="/note/add/Project/{{project.key}}">➕ Add Note</a>
+        <a class="button center" href="/file/add/Project/{{project.key}}">➕ Attach File</a>
+        <button id="delete" class="delete_button center">🗑️ Delete</button>
+        {% endif %}
+        <div class="tabbed">
+          <input type="radio" id="tab1" name="css-tabs" checked>
+          <input type="radio" id="tab2" name="css-tabs">
+          <input type="radio" id="tab3" name="css-tabs">
+          <input type="radio" id="tab4" name="css-tabs">
+          <input type="radio" id="tab5" name="css-tabs">
+          <input type="radio" id="tab6" name="css-tabs">
+
+          <ul class="tabs">
+            <li class="tab"><label for="tab1">Details</label></li>
+            {% if project.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+            <li class="tab"><label for="tab2">Tasks</label></li>
+            <li class="tab"><label for="tab3">Milestones</label></li>
+            <li class="tab"><label for="tab4">Notes & Files</label></li>
+            <li class="tab"><label for="tab5">Gantt</label></li>
+            <li class="tab"><label for="tab6">Calendar</label></li>
+            {% endif %}
+          </ul>
+
+          <div class="tab-content">
+            <div class="backed col-sm-12 col-md-12 col-lg-12">
+              <div class="row justified">
+                <div class+="content">
+                  <form id="add_project_form">
+                    <div>
+                      <label for="name">Name</label>
+                      <input type="text" name="name" id="name" placeholder="Name" value="{{project.name}}" />
+                    </div>
+                    <div>
+                      <label for="description">Description</label>
+                      <input type="text" name="description" id="description" placeholder="Description"
+                        value="{{project.description}}" />
+                    </div>
+                    <div>
+                      <label for="tags">Tags</label>
+                      <input type="text" name="tags" id="tags" placeholder="Tags,seperated,by,commas"
+                        value="{{project.tags}}" />
+                    </div>
+                    <label for="estimated_quarter_days">Estimated Quarter Work Days</label>
+                    <input type="number" id="estimated_quarter_days" name="estimated_quarter_days" min="1" max="1000"
+                      value="{{project.estimated_quarter_days}}">
+                    <label for="start">Start Date</label>
+                    <input id="start" type="date" name="start" />
+
+                    <label for="due">Due Date</label>
+                    <input id="due" type="date" name="due" />
+                    <div>
+                      <input type="submit" class="add_button"
+                        value="{% if project.name.len() == 0 %}Create Project!{%else%}Update Project{% endif %}" />
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content">
+            {% if project.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+            {% if tasks.len() > 0 %}
+            <div class="backed">
+              <h2>Task List</h2>
+              <label for="filter">Filter Tasks</label>
+              <input type="text" name="filter" id="task_filter" placeholder="" value="" />
+              {% for task in tasks %}
+              <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                <a href="/task/{{task.key}}">
+                  <p><b>{{task.name}}</b></p>
+                  <hr />
+                  <p>{{task.description}}</p>
+                </a>
+              </div>
+              {%endfor %}
+              </ul>
+            </div>
+            {% else %}
+            <div class="row white-backed">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <h3>Create your first task</h3>
+                <h4>Items of work, meetings to schedule, phone calls to make and schedule service visits.</h4>
+                <h4>Breaking your projects down into tasks no matter how granular you need them, can help you schedule,
+                  visualize, estimate and execute without the chaos.</h4>
+              </div>
+              <div class="col-sm-12 col-md-12col-lg-12">
+                <a class="button" href="/task/add/{{project.key}}">Add New Task</a>
+              </div>
+            </div>
+            {% endif %}
+            {% endif %}
+          </div>
+          <div class="tab-content">
+            {% if project.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+            {% if milestones.len() > 0 %}
+            <div class="backed">
+              <h2>Milestones</h2>
+              <label for="filter">Filter Milestones</label>
+              <input type="text" name="filter" id="task_filter" placeholder="" value="" />
+              {% for milestone in milestones %}
+              <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                <a href="/milestone/{{milestone.key}}">
+                  <p><b>{{milestone.name}}</b></p>
+                  <hr />
+                  <p>{{milestone.description}}</p>
+                </a>
+              </div>
+              {%endfor %}
+            </div>
+            {% else %}
+            <div class="row white-backed">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <h3>Create your Milestone</h3>
+                <h4>Define a set of tasks that can comprise your projects milestones</h4>
+                <h4>Besides knowing you're that much closer to completion, automation of invoicing, reporting and even
+                  sending a congratulatory gif to team channels is all at your finger tips.</h4>
+              </div>
+              <div class="col-sm-12 col-md-12col-lg-12">
+                <a class="button" href="/milestone/add/{{project.key}}">Add New Milestone</a>
+              </div>
+            </div>
+            {% endif %}
+            {% endif %}
+          </div>
+          <div class="tab-content">
+            <div class="row justified ">
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                {% if notes.len() > 0 %}
+                <h3>Notes & Docs</h3>
+                {% for note in notes %}
+                <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                  <a href="/note/{{note.key}}">
+                    <p><b>{{note.title}}</b></p>
+                  </a>
+                </div>
+                {% endfor %}
+                {%else%}
+                <div class="white-backed">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <h3>Add Your First Note</h3>
+                    <h4>Create a note at the project level, project onboarding, project style guides and any project
+                      notes that you want organized under this project</h4>
+                  </div>
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <a class="button" href="/note/add/Project/{{project.key}}">Add Note</a>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+              <div class="col-sm-12 col-md-6 col-lg-6">
+                {% if files.len() > 0 %}
+                <h3>Files</h3>
+                {% for file in files %}
+                <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                  <a href="/file/{{file.key}}">
+                    <p><b>{{file.name}}</b></p>
+                    <hr />
+                    <p>{{file.description}}</p>
+                  </a>
+                </div>
+                {% endfor %}
+                {%else%}
+                <div class="white-backed">
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <h3>Attach Your First File</h3>
+                    <h4>Attach a file to be visible for the project. Easily share and access files you store here.</h4>
+                  </div>
+                  <div class="col-sm-12 col-md-12 col-lg-12">
+                    <a class="button" href="/file/add/Project/{{project.key}}">Add File</a>
+                  </div>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="tab-content">
+            <div class="row white-backed">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="dots">
+                  {% for status in crate::task::TaskStatus::iter() %}
+                  <span class="dot"
+                    style="background-color: {{ Self::get_task_background_color(self, status) }};">{{status.to_string()}}</span>
+                  {% endfor %}
+                </div>
+                <div class="gantt">
+                  <div class="head">Mon</div>
+                  <div class="head">Tue</div>
+                  <div class="head">Wed</div>
+                  <div class="head">Thur</div>
+                  <div class="head">Fri</div>
+                  <div class="head">Sat</div>
+                  <div class="head">Sun</div>
+
+                  {% for task in tasks %}
+                  <div
+                    style="background: {{ Self::get_task_background_color(self, task.status) }}; grid-row: {{loop.index+1}}; grid-column: {{Self::get_grid_column(self, task.start, task.due)}}">
+                    <a href="/task/{{task.key}}">{{task.name}}</a>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tab-content">
+            <div class="row white-backed">
+              <div class="col-sm-12 col-md-12 col-lg-12">
+                <div id="calendar"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<script>
+  window.addEventListener('load', function () {
+    {% if !project.key.is_nil() %}
+    send_delete("delete", "/project/{{project.key}}", (deleted, res) => {
+      if (deleted) {
+        window.location.href = `/`
+      }
+    })
+    {% endif %}
+    let due = parseInt("{{project.due}}");
+    document.getElementById("due").value = (due == 0 ? new Date() : new Date(due * 1000)).toISOString().split('T')[0]
+    let start = parseInt("{{project.start}}");
+    document.getElementById("start").value = (start == 0 ? new Date() : new Date(start * 1000)).toISOString().split('T')[0]
+    post_form("add_project_form", "/project", data => {
+      let key = "{{project.key}}"
+      data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+      data.organization_key = "{{user.organization_key}}"
+      data.owner_key = "{{user.key}}"
+      data.estimated_quarter_days = num_from_string(data.estimated_quarter_days)
+      data.start = Math.floor(new Date(data.start).getTime() / 1000);
+      data.due = Math.floor(new Date(data.due).getTime() / 1000);
+      data.name = data.name || "";
+      data.description = data.description || "";
+      data.tags = data.tags || "";
+      data.created = data.created || 0;
+      data.updated = data.updated || 0;
+      return data;
+    }, (response_text) => {
+      let object = JSON.parse(response_text);
+      window.location.href = `/project/${object.key}`
+    });
+
+    var calendarElement = document.getElementById("calendar");
+    var cal = new calendarJs(calendarElement);
+    {% for task in tasks %}
+    cal.addEvent({
+      from: new Date({{ task.start * 1000 }}),
+      to: new Date({{ task.due * 1000 }}),
+    title: "{{task.name}}",
+      description: "{{task.description}}"
+          });
+  {% endfor %}
+  });
+</script>
+{% endblock %}

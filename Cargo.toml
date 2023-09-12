@@ -1,0 +1,39 @@
+[package]
+name = "kinbrio"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tide = {version="*", features=["cookies"]}
+askama = "*"
+tokio = { version = "*", features = ["full"] }
+async-std = { version = "*", features = ["tokio1"] }
+async-trait = "*"
+sqlx = { version="*",  features = [ "postgres", "runtime-tokio-native-tls", "uuid"] } 
+serde = {version= "*"}
+serde_derive = "*"
+serde_json = {version= "*"}
+serde-this-or-that = "*"
+uuid = {version="*", features = [
+    "v4",                # Lets you generate random UUIDs
+    "fast-rng",          # Use a faster (but still sufficiently random) RNG
+    "serde",
+]}
+dotenv="*"
+tide-csrf="*"
+jsonwebtoken="*"
+pwhash="*"
+chrono ="*"
+matrix-sdk="*"
+anyhow="*"
+url="*"
+markdown="*"
+tide-compress="*"
+strum = "*"
+strum_macros = "*" 
+lazy_static="*"
+multer="*"
+reqwest="*"
+base64="*"

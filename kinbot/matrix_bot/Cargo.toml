@@ -1,0 +1,19 @@
+[package]
+name = "random_poster"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+matrix-sdk = "*"
+url = "*"
+anyhow="*"
+tokio = { version = "*", features = ["full"] }
+mime="*"
+tracing-subscriber="*"
+dotenv="*"
+rand="*"
+image="*"
+serde_derive="*"
+serde="*"

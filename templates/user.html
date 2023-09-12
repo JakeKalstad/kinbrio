@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}{{email}}{% endblock %}
+{% block description %} account information{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container">
+    <div class="row justified">
+        <div class+="content">
+            <div class="backed col-sm-12 col-md-12 col-lg-12 center justified">
+                <h1>Account Configuration</h1>
+                <div class="row justified">
+                    <div class+="content">
+                        <form id="user_form">
+                            <a title="Logout of kinbrio session" class="delete_button" href="/logout">Logout</a>
+                            <hr />
+                            <h3>User Fields</h3>
+                            <label
+                                title="We will send any kinbrio configured system emails to this address - seperate from your matrix accounts configured email if needed."
+                                for="email">System Message Email</label>
+                            <input type="text" name="email" id="email" placeholder="email" value="{{user.email}}" />
+                            <div>
+                                <input title="Save Updated User Information" type="submit" class="add_button"
+                                    value="Update User Information" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    window.addEventListener('load', function () {
+        post_form("user_form", "/users/{{user.key}}", data => {
+            let key = "{{user.key}}";
+            data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key;
+            data.organization_key = "{{user.organization_key}}";
+            data.matrix_home_server = "{{user.matrix_home_server}}";
+            data.matrix_user_id = "{{user.matrix_user_id}}";
+            data.email = data.email || "";
+            data.secret = "";
+            data.created = data.created || 0;
+            data.updated = data.updated || 0;
+            return data;
+        }, (response_text) => {
+            let object = JSON.parse(response_text);
+            window.location.href = `/account`;
+        });
+    })
+</script>
+{% endblock %}

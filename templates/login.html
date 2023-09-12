@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+{% block description %}Login to Kinbrio{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="section">
+    <div class="heading_div">
+      <h1>Welcome Back</h1>
+      <h2>Authenticate Securely Using Your <u><a href="https://matrix.org/about/">Matrix</a></u> Account</h2>
+      <h3>(Or <u><a href="/register">Register Here</a></u>)</h3>
+    </div>
+    <div class="row justified">
+      <div class="content">
+        <form class="heading_div" id="login_form">
+          {% for choice in choices %}
+            <a class="button" style="background:#ffffff" href="{{choice.url}}">
+              <img decoding="async" loading="lazy" width="32" height="32" alt="{{choice.display}} logo" src="{{ choice.logo }}">
+              <hr/>
+              <span>{{choice.display}}</span>
+            </a>
+          {% endfor %}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', function () {
+    post_form("login_form", "/login", data => {
+      return data
+    }, () => { window.location.href = "/" });
+  })
+</script>
+{% endblock %}

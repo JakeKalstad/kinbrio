@@ -1,0 +1,234 @@
+{% extends "layout.html" %}
+
+{% block title %}Home{% endblock %}
+{% block description %}User Dashboard{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="backed col-sm-12 col-md-12 col-lg-12">
+  <p>
+  <h3>{{user.email}} <a href="/organization/{{organization.key}}">{{organization.name}}</a></h3>
+  </p>
+
+  <a class="button" href="/project/add">➕ add project</a>
+  <a class="button" href="/board/add">➕ add board</a>
+  <a class="button" href="/service_item/add">➕ add products & services</a>
+  <a class="button" href="/entity/add">➕ add entity</a>
+  <a class="button center" href="/note/add/Organization/{{organization.key}}">➕ Add Note</a>
+  <a class="button center" href="/file/add/Organization/{{organization.key}}">➕ Attach File</a>
+  <div class="tabbed">
+    <input type="radio" id="tab1" name="css-tabs" checked>
+    <input type="radio" id="tab2" name="css-tabs">
+    <input type="radio" id="tab3" name="css-tabs">
+    <input type="radio" id="tab4" name="css-tabs">
+    <input type="radio" id="tab5" name="css-tabs">
+
+    <ul class="tabs">
+      <li class="tab"><label for="tab1">Projects</label></li>
+      <li class="tab"><label for="tab2">Boards</label></li>
+      <li class="tab"><label for="tab3">Services & Products</label></li>
+      <li class="tab"><label for="tab4">Contacts & Entitys</label></li>
+      <li class="tab"><label for="tab5">Documents</label></li>
+    </ul>
+
+    <div class="tab-content">
+      {% if projects.len() > 0 %}
+      <h3>Your Projects</h3>
+      <div class="row">
+        {% for project in projects %}
+        <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+          <a href="/project/{{project.key}}">
+            <p><b>{{project.name}}</b></p>
+            <hr />
+            <p>{{project.description}}</p>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="row white-backed ">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <h3>Create Your First Project</h3>
+          <h4>Keep track of the different projects you have across your marketing, sales, R&D, business development, and
+            executive teams.</h4>
+          <h5>Create tasks, schedules, and milestones. Keep organized notes, documentation and files relevant to the
+            project in one easily accessible place.</h5>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          <a class="button" href="/project/add">➕ add project</a>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          <a class="button" style="text-decoration: underline;" href="/akaunting">Import From Akaunting</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+    <div class="tab-content">
+      {% if user_boards.len() > 0 %}
+      <h3>Your Boards</h3>
+      <div class="row">
+        {% for board in user_boards %}
+        <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+          <a href="/board/{{board.key}}">
+            <p><b>{{board.name}}</b></p>
+            <hr />
+            <p>{{board.description}}</p>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="row white-backed ">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <h3>Create Your First Board</h3>
+          <h4>Track and filter tasks with boards to help you manage tasks across lots of projects and teams.</h4>
+          <h5>Customize columns and filters to view what's happening exactly how you need</h5>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <a class="button" href="/board/add">➕ add board</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="tab-content">
+      {% if service_items.len() > 0 %}
+      <h3>Services and Products</h3>
+      <div class="row">
+        {% for service_item in service_items %}
+        <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+          <a href="/service_item/{{service_item.key}}">
+            <p><b>{{service_item.name}}</b></p>
+            <hr />
+            <p>{{service_item.description}}</p>
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="row white-backed">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <h3>Import your items and services from akaunting or add some</h3>
+          <h4>Link your projects and tasks to items and services to help organize and visualize your operations even
+            better.</h4>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          <a class="button" href="/service_item/add">Add some products/services</a>
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          <a class="button" style="text-decoration: underline;" href="/akaunting">Import From Akaunting</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="tab-content">
+      <div class="row justified ">
+        <div class="col-sm-12 {% if contacts.len() > 0 %}col-md-6 col-lg-6}{%else%}col-md-12 col-lg-12{%endif%}">
+          {% if entitys.len() > 0 %}
+          <h3>Entitys</h3>
+          <div class="row">
+            {% for entity in entitys %}
+            <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+              <a href="/entity/{{entity.key}}">
+                <p><b>{{entity.name}}</b></p>
+                <hr />
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          {%else%}
+          <div class="row white-backed">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <h3>Import your customers and suppliers from akaunting or add some</h3>
+              <h4>Link different entities to tasks, projects, items and services to help organize and automate your
+                operations to the fullest.</h4>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+              <a class="button" href="/entity/add">Add New Entity</a>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-6">
+              <a class="button" style="text-decoration: underline;" href="/akaunting">Import From Akaunting</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          {% if contacts.len() > 0 %}
+          <h3>Global Rolodex</h3>
+          <div class="row">
+            {% for contact in contacts %}
+            <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+              <a href="/contact/{{contact.key}}">
+                <p><b>{{contact.first_name}} {{contact.last_name}}</b></p>
+                <hr />
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="tab-content">
+      <div class="row justified ">
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          {% if notes.len() > 0 %}
+          <h3>Notes & Docs</h3>
+          <div class="row">
+            {% for note in notes %}
+            <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+              <a href="/note/{{note.key}}">
+                <p><b>{{note.title}}</b></p>
+                <hr />
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          {%else%}
+          <div class="row white-backed">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <h3>Add Your First Note</h3>
+              <h4>Create a note at the Organization level: internal documentation, onboarding, style guides and employee
+                guide lines can be created and accessible by all teams across all projects</h4>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <a class="button center" href="/note/add/Organization/{{organization.key}}">➕ Add Note</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="col-sm-12 col-md-6 col-lg-6">
+          {% if files.len() > 0 %}
+          <h3>Files</h3>
+          <div class="row">
+            {% for file in files %}
+            <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+              <a href="/file/{{file.key}}">
+                <p><b>🖇️ {{file.name}} {{file.description}}</b></p>
+                <hr />
+              </a>
+            </div>
+            {% endfor %}
+          </div>
+          {%else%}
+          <div class="row white-backed">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <h3>Attach Your First File</h3>
+              <h4>Attach a file to be visible for the organization. Easily share and access files you store here.</h4>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <a class="button center" href="/file/add/Organization/{{organization.key}}">➕ Attach File</a>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

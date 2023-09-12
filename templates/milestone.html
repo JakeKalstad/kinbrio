@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if milestone.name.len() > 0 %}{{milestone.name}}{%else%}Add Milestone{% endif %}{% endblock %}
+{% block description %}{{milestone.description}}{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justified">
+    <div class+="content">
+      <div class="backed col-sm-12 col-md-12 col-lg-12">
+        <h1>Milestone {{milestone.name}}</h1>
+        {% if milestone.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+        <a class="button center" href="/note/add/Milestone/{{milestone.key}}">➕ Add Note</a>
+        <a class="button center" href="/file/add/Milestone/{{milestone.key}}">➕ Attach File</a>
+        <button id="delete" class="delete_button center">🗑️ Delete</button>
+        {% endif %}
+        <div class="row justified">
+          <div class="content">
+            <form id="add_milestone_form">
+              <div>
+                <label for="name">Name</label>
+                <input type="text" name="name" id="name" placeholder="Name" value="{{milestone.name}}" />
+              </div>
+              <div>
+                <label for="description">Description</label>
+                <textarea name="description" id="description" placeholder="Description"
+                  value="{{milestone.description}}">{{milestone.description}}</textarea>
+              </div>
+              <div>
+                <label for="tags">Tags</label>
+                <input type="text" name="tags" id="tags" placeholder="Tags,seperated,by,commas"
+                  value="{{milestone.tags}}" />
+              </div>
+              <label for="estimated_quarter_days">Estimated Quarter Work Days</label>
+              <input type="number" id="estimated_quarter_days" name="estimated_quarter_days" min="1" max="1000"
+                value="{{milestone.estimated_quarter_days}}">
+              <label for="start">Start Date</label>
+              <input id="start" type="date" name="start" />
+
+              <label for="due">Due Date</label>
+              <input id="due" type="date" name="due" />
+              <div>
+                <input type="submit" class="add_button"
+                  value="{% if milestone.name.len() == 0%}Create Milestone!{%else%}Update Milestone{% endif %}" />
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', function () {
+    {% if milestone.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+    send_delete("delete", "/milestone/{{milestone.key}}", (deleted, res) => {
+      if (deleted) {
+        window.location.href = `/project/{{milestone.project_key}}`
+      }
+    })
+    {% endif %}
+    post_form("add_milestone_form", "/milestone", data => {
+      let key = "{{milestone.key}}"
+      data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+      data.organization_key = "{{user.organization_key}}"
+      data.owner_key = "{{user.key}}"
+      data.project_key = "{{milestone.project_key}}"
+      data.name = data.name || "";
+      data.description = data.description || "";
+      data.tags = data.tags || "";
+      data.estimated_quarter_days = parseInt(data.estimated_quarter_days || "0");
+      data.start = Math.floor(new Date(data.start).getTime() / 1000);
+      data.due = Math.floor(new Date(data.due).getTime() / 1000);
+      data.created = data.created || 0;
+      data.updated = data.updated || 0;
+      return data;
+    }, (response_text) => {
+      let object = JSON.parse(response_text);
+      window.location.href = `/milestone/${object.key}`
+    });
+    let due = parseInt("{{milestone.due}}");
+    document.getElementById("due").value = (due == 0 ? new Date() : new Date(due * 1000)).toISOString().split('T')[0]
+    let start = parseInt("{{milestone.start}}");
+    document.getElementById("start").value = (start == 0 ? new Date() : new Date(start * 1000)).toISOString().split('T')[0]
+  })
+</script>
+{% endblock %}

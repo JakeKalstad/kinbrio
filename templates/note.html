@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if note.title.len() > 0 %}{{note.title}}{%else%}Create Note{% endif %}{% endblock %}
+{% block description %}{{note.content}}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" defer href="https://unpkg.com/easymde/dist/easymde.min.css">
+{% endblock %}
+pub association_type: AssociationType,
+pub association_key: uuid::Uuid,
+
+{% block content %}
+<div class="container">
+    <div class="row justified">
+        <div class="content">
+            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                {% if note.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+                <button id="delete" class="delete_button center">🗑️ Delete</button>
+                {% endif %}
+                <form id="add_note_form">
+                    <h1 name="title" id="title" contentEditable="true">{% if note.title.len() ==
+                        0%}Title{%else%}{{note.title}}{% endif %}</h1>
+                    <textarea name="content" id="note_area_md">{{note.content}}</textarea>
+                    <input type="submit" class="add_button"
+                        value="{% if note.title.len() == 0%}Create Note!{%else%}Update Note{% endif %}" />
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="/fs/js/easymde@2.18.0.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            {% if note.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+            send_delete("delete", "/note/{{note.key}}", (deleted, res) => {
+                if (deleted) {
+                    let type = "{{note.association_type.to_string()}}".toLowerCase()
+                    window.location.href = `/${type}/{{note.association_key}}`
+                }
+            })
+            {% endif %}
+            const easyMDE = new EasyMDE({ element: document.getElementById('note_area_md') });
+
+            const title = document.getElementById('title');
+            post_form("add_note_form", "/note", data => {
+                let key = "{{note.key}}"
+                data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+                data.organization_key = "{{user.organization_key}}"
+                data.owner_key = "{{user.key}}"
+                data.association_type = "{{note.association_type.to_string()}}";
+                data.association_key = "{{note.association_key}}";
+                data.url = data.url || "";
+                data.title = title.innerHTML;
+                data.content = data.content || "";
+                data.created = data.created || 0;
+                data.updated = data.updated || 0;
+                return data;
+            }, (response_text) => {
+                let object = JSON.parse(response_text);
+                window.location.href = `/note/${object.key}`
+            });
+        })
+    </script>
+    {% endblock %}

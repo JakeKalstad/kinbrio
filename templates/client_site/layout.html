@@ -1,0 +1,55 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{% block title %} {{ title }} {% endblock %}</title>
+  <meta name="description" content="{% block description %}{% endblock %}">
+  <meta name="author" content="{% block title %} {{ author }} {% endblock %}">
+
+  <meta property="og:title" content="{% block title %} {{ title }} {% endblock %}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{% block canonical %}{% endblock %}">
+  <meta property="og:description" content="{% block description %}{% endblock %}">
+  <meta property="og:image" content="{% block image %}{% endblock %}">
+
+  <link rel="icon" href="/fs/favicon.ico">
+  <link rel="apple-touch-icon" href="/fs/apple-touch-icon.png">
+
+  {% block head %}{% endblock %}
+</head>
+
+<body>
+  <nav id="menu">
+    <div class="row" style="justify-content: center;">
+      <div class="col-sm-6 col-md-3 col-lg-2 flex-center" style="justify-content: center; text-align: center">
+        <a title="Landing page" href="/">🏠 Home</a>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2 flex-center" style="justify-content: center; text-align: center">
+        <a title="About Us" href="/">About</a>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2 flex-center" style="justify-content: center; text-align: center">
+        <a title="Contact" href="/">Contact Us</a>
+      </div>
+      <div class="col-sm-6 col-md-3 col-lg-2 flex-center" style="justify-content: center; text-align: center">
+        <a title="Services" href="/">Services</a>
+      </div>
+    
+      <div class="col-sm-6 col-md-3 col-lg-2 flex-center" style="justify-content: center; text-align: center">
+        <a title="Come chat with us directly over matrix about any questions and issues." target="_blank" href="https://matrix.to/#/#SanturceSoftware:matrix.org">Come chat with us directly over matrix about any questions and issues</a>
+      </div>
+      
+    </div>
+  </nav>
+  <div id="content">
+    {% block content %}{% endblock %}
+  </div>
+  <script async src="/fs/js/app.js"></script>
+  <link rel="stylesheet" defer href="/fs/css/mini-default.min.css">
+  <link rel="stylesheet" defer href="/fs/css/styles.css">
+</body>
+
+</html>

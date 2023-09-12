@@ -1,0 +1,233 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if contact.first_name.len() > 0 %}{{contact.first_name}} {{contact.last_name}}{%else%}Create
+Contact{% endif %}{% endblock %}
+{% block description %}{{contact.description}}{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justified">
+    <div class="backed col-sm-12 col-md-12 col-lg-12">
+      <h1>{{contact.first_name}} {{contact.last_name}}</h1>
+      {% if contact.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+      <a class="button center" href="/note/add/Contact/{{contact.key}}">➕ Add Note</a>
+      <a class="button center" href="/file/add/Contact/{{contact.key}}">➕ Attach File</a>
+      <button id="delete" class="delete_button center">🗑️ Delete</button>
+      {% endif %}
+      <div class="row justified">
+        <div class="content">
+          <div class="tabbed">
+            <input type="radio" id="tab1" name="css-tabs" checked>
+            <input type="radio" id="tab3" name="css-tabs">
+            <ul class="tabs">
+              <li class="tab"><label for="tab1">Details</label></li>
+              <li class="tab"><label for="tab3">Documents</label></li>
+            </ul>
+            <div class="tab-content">
+              <form id="add_contact_form">
+                <div>
+                  <div class="row">
+                    <div class="col-sm-12 col-md-8 col-lg-5">
+                      <label for="first_name">First</label>
+                      <input type="text" name="first_name" id="first_name" placeholder="First Name"
+                        value="{{contact.first_name}}" />
+                    </div>
+                    <div class="col-sm-12 col-md-4 col-lg-2">
+                      <label for="middle_initial">Initital</label>
+                      <input type="text" name="middle_initial" id="middle_initial" placeholder="Initial"
+                        value="{{contact.middle_initial}}" />
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-5">
+                      <label for="last_name">Last</label>
+                      <input type="text" name="last_name" id="last_name" placeholder="Last Name"
+                        value="{{contact.last_name}}" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label for="description">Description</label>
+                  <textarea name="description" id="description" placeholder="Description"
+                    value="{{contact.description}}">{{contact.description}}</textarea>
+                </div>
+                <div>
+                  <label for="position">Position</label>
+                  <input type="text" name="position" id="position" placeholder="Position"
+                    value="{{contact.position}}" />
+                </div>
+                <div>
+                  <label for="email">Email</label>
+                  <input type="text" name="email" id="email" placeholder="Email" value="{{contact.email}}" />
+                </div>
+                <div>
+                  <label for="secondary_email">Secondary Email</label>
+                  <input type="text" name="secondary_email" id="secondary_email" placeholder="Email"
+                    value="{{contact.secondary_email}}" />
+                </div>
+                <div>
+                  <label for="phone">Phone</label>
+                  <input type="text" name="phone" id="phone" placeholder="Phone" value="{{contact.phone}}" />
+                </div>
+                <div>
+                  <label for="secondary_phone">Secondary Phone</label>
+                  <input type="text" name="secondary_phone" id="secondary_phone" placeholder="Phone"
+                    value="{{contact.secondary_phone}}" />
+                </div>
+                <div>
+                  <label for="matrix_user_id">Matrix User ID</label>
+                  <input type="text" name="matrix_user_id" id="matrix_user_id" placeholder="matrix_user_id"
+                    value="{{contact.matrix_user_id}}" />
+                </div>
+                <div>
+                  <label for="web_url">Web URL</label>
+                  <input type="text" name="web_url" id="web_url" placeholder="Web URL" value="{{contact.web_url}}" />
+                </div>
+                <div>
+                  <label for="avatar_url">avatar_url</label>
+                  <input type="text" name="avatar_url" id="avatar_url" placeholder="avatar_url"
+                    value="{{contact.avatar_url}}" />
+                </div>
+                <div>
+                  <label for="address_primary">Address</label>
+                  <input type="text" name="address_primary" id="address_primary" placeholder="Address"
+                    value="{{contact.address_primary}}" />
+                </div>
+                <div>
+                  <label for="address_unit">Unit</label>
+                  <input type="text" name="address_unit" id="address_unit" placeholder="Unit"
+                    value="{{contact.address_unit}}" />
+                </div>
+                <div>
+                  <label for="city">City</label>
+                  <input type="text" name="city" id="city" placeholder="City" value="{{contact.city}}" />
+                </div>
+                <div>
+                  <label for="state">State</label>
+                  <input type="text" name="state" id="state" placeholder="State" value="{{contact.state}}" />
+                </div>
+                <div>
+                  <label for="zip_code">Zip</label>
+                  <input type="text" name="zip_code" id="zip_code" placeholder="Zipcode" value="{{contact.zip_code}}" />
+                </div>
+                <div>
+                  <label for="country">Country</label>
+                  <input type="text" name="country" id="country" placeholder="Country" value="{{contact.country}}" />
+                </div>
+                <div>
+                  <input type="submit" class="add_button"
+                    value="{% if contact.first_name.len() == 0%}Create contact!{%else%}Update contact{% endif %}" />
+                </div>
+              </form>
+            </div>
+
+            <div class="tab-content">
+              <div class="row justified ">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  {% if notes.len() > 0 %}
+                  <h3>Notes & Docs</h3>
+                  {% for note in notes %}
+                  <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                    <a href="/note/{{note.key}}">
+                      <p><b>{{note.title}}</b></p>
+                    </a>
+                  </div>
+                  {% endfor %}
+                  {%else%}
+                  <div class="white-backed">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <h3>Add Your First Note</h3>
+                      <h4>Create a note at the project level, project onboarding, project style guides and any project
+                        notes that you want organized under this project</h4>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <a class="button" href="/note/add/Contact/{{contact.key}}">Add Note</a>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  {% if files.len() > 0 %}
+                  <h3>Files</h3>
+                  {% for file in files %}
+                  <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                    <a href="/file/{{file.key}}">
+                      <p><b>{{file.name}}</b></p>
+                      <hr />
+                      <p>{{file.description}}</p>
+                    </a>
+                  </div>
+                  {% endfor %}
+                  {%else%}
+                  <div class="white-backed">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <h3>Attach Your First File</h3>
+                      <h4>Attach a file to be visible for the project. Easily share and access files you store here.
+                      </h4>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <a class="button" href="/file/add/Contact/{{contact.key}}">Add File</a>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', function () {
+      {% if contact.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+      send_delete("delete", "/contact/{{contact.key}}", (deleted, res) => {
+        if (deleted) {
+          window.location.href = `/entity/{{contact.entity_key}}`
+        }
+      })
+      {% endif %}
+      post_form("add_contact_form", "/contact", data => {
+        let key = "{{contact.key}}"
+        data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+        data.organization_key = "{{user.organization_key}}"
+        data.external_accounting_id = data.external_accounting_id || "{{contact.external_accounting_id}}"
+        data.owner_key = "{{user.key}}"
+        data.entity_key = "{{contact.entity_key}}"
+        data.first_name = data.first_name || "";
+        data.middle_initial = data.middle_initial || "";
+        data.last_name = data.last_name || "";
+        data.description = data.description || "";
+        data.position = data.position || "";
+        data.email = data.email || "";
+        data.phone = data.phone || "";
+        data.secondary_email = data.secondary_email || "";
+        data.secondary_phone = data.secondary_phone || "";
+
+        data.matrix_user_id = data.matrix_user_id || "";
+        data.web_url = data.web_url || "";
+        data.avatar_url = data.avatar_url || "";
+        data.social_urls = data.social_urls || [];
+        data.address_primary = data.address_primary || "";
+        data.address_unit = data.address_unit || "";
+        data.city = data.city || "";
+        data.state = data.state || "";
+        data.zip_code = data.zip_code || "";
+        data.country = data.country || "";
+        data.created = data.created || 0;
+        data.updated = data.updated || 0;
+
+        data.created = data.created || 0;
+        data.updated = data.updated || 0;
+        return data;
+      }, (response_text) => {
+        let object = JSON.parse(response_text);
+        window.location.href = `/contact/${object.key}`
+      });
+    })
+  </script>
+  {% endblock %}

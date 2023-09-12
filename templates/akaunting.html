@@ -1,0 +1,178 @@
+{% extends "layout.html" %}
+
+{% block title %}Akaunting Settings{% endblock %}
+{% block description %}Integrate and manage your Akaunting platform{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<script>
+    function set_company_id(val) { 
+        document.getElementById('akaunting_company_id').value = val
+    }
+    function import_item_id(id) { document.getElementById('akaunting_company_id').value = val }
+    function import_customer_id(id) { document.getElementById('akaunting_company_id').value = val }
+    
+</script>
+<div class="container">
+    <div class="section">
+        <div class="heading_div">
+            <h1>Keep your books in order. Run reports and projections. Organization you accounting. Build plugins. Host
+                it yourself</h1>
+            <h3>Don't Already Have Your Own Akaunting login?</h3>
+            <h4>The simplest way to register an account at <a target="_blank"
+                    href="https://akaunting.com">Akaunting.com</a>, a managed service.
+            </h4>
+            <h5>Once you have a valid username and password for your akaunting you can enter it in below to link your
+                kinbrio platform and synchronize your data!</h5>
+            <p>You can <a href="/documentation#setup-akaunting">host a private instance of akaunting</a></p>
+        </div>
+        <div class="row justified">
+            <div class="backed content">
+                <img decoding="async" loading="lazy" width="128px" height="128px"alt="Akaunting logo" src="/fs/images/akaunting-logo-horizontal.svg">
+                <hr />
+                <p><b>Link Akaunting into kinbrio</b></p>
+                <p></p>
+                <div class="row justified">
+                    <div class="col-sm-12 col-md-12 col-lg-6">
+                        <form id="akaunting_form" style="text-align:left;">
+                            <label for="user_name">User Name</label><br>
+                            <input type="text" id="user_name" name="user_name" value="{{akaunting_options.user_name}}">
+
+                            <label for="user_pass">User Pass</label><br>
+                            <input type="password" id="user_pass" name="user_pass"
+                                value="{{akaunting_options.user_pass}}">
+
+                            <label for="akaunting_domain">Akaunting Domain</label><br>
+                            <input type="text" id="akaunting_domain" name="akaunting_domain"
+                                value="{{akaunting_options.akaunting_domain}}">
+
+                            <label for="akaunting_company_id">Akaunting Company ID</label><br>
+                            <input type="text" id="akaunting_company_id" name="akaunting_company_id"
+                                value="{{akaunting_options.akaunting_company_id}}">
+
+                            <input type="checkbox" id="organization_data" name="organization_data"
+                                value="{{akaunting_options.organization_data}}" {% if
+                                akaunting_options.organization_data %} checked{% endif %}>
+                            <label for="organization_data">Company Data</label><br>
+
+                            <input type="checkbox" id="employee_data" name="employee_data"
+                                value="{{akaunting_options.employee_data}}" {% if akaunting_options.employee_data %}
+                                checked{% endif %}>
+                            <label for="employee_data">Users/Employees</label><br>
+
+                            <input type="checkbox" id="client_data" name="client_data"
+                                value="{{akaunting_options.client_data}}" {% if akaunting_options.client_data %}
+                                checked{% endif %}>
+                            <label for="client_data">Clients</label><br>
+
+                            <input type="checkbox" id="vendor_data" name="vendor_data"
+                                value="{{akaunting_options.vendor_data}}" {% if akaunting_options.vendor_data %}
+                                checked{% endif %}>
+                            <label for="vendor_data">Vendors</label><br>
+
+                            <input type="checkbox" id="item_data" name="item_data"
+                                value="{{akaunting_options.item_data}}" {% if akaunting_options.item_data %} checked{%
+                                endif %}>
+                            <label for="item_data">Services & Items</label><br>
+
+                            <input type="checkbox" id="invoice_data" name="invoice_data"
+                                value="{{akaunting_options.invoice_data}}" {% if akaunting_options.invoice_data %}
+                                checked{% endif %}>
+                            <label for="invoice_data">Invoices & Payments</label><br>
+
+                            <input type="checkbox" id="allow_post" name="allow_post"
+                                value="{{akaunting_options.allow_post}}" {% if akaunting_options.allow_post %} checked{%
+                                endif %}>
+                            <label for="allow_post">Creation of Invoices & Payments</label><br>
+                            <div>
+                                <input class="add_button" type="submit" value="Save" />
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-6">
+                        <div class="content">
+                            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                                <p><b>Companys</b></p>
+                                {% for company in companys %}
+                                <div class="white-backed bump">
+                                    {{ company.name }} ({{ company.id }})
+                                    {% if company.id.to_string() == akaunting_options.akaunting_company_id %}<p><b>Selected Company</b></p>{%else%}<button onclick="set_company_id('{{ company.id }}')" class="add_button"
+                                        type="button">Select</button>{%endif%}
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                                <p><b>Items</b></p>
+                                {% for item in items %}
+                                <div class="white-backed bump">
+                                    {{ Self::get_str(self, item.name) }}
+                                    <form class="list_form" id="akaunting_form" action="/akaunting/import_item" method="post" enctype="multipart/form-data">
+                                        <input style="display:none" type="text" id="import_id" name="import_id"
+                                            value="{{item.id}}">
+                                        <input class="add_button" type="submit" value="{% if item.kinbrio_id.is_some() %}Reimport{%else%}Import{%endif%}" /> 
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                                <p><b>Users</b></p>
+                                {% for user in users %}
+                                <div class="white-backed bump">
+                                    {{ user.name }}
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                                <p><b>Customers</b></p>
+                                {% for customer in customers %} 
+                                <div class="white-backed bump">
+                                    {{  customer.name }}
+                                    <form class="list_form" id="akaunting_form" action="/akaunting/import_customer" method="post" enctype="multipart/form-data">
+                                        <input style="display:none" type="text" id="import_id" name="import_id"
+                                            value="{{customer.id}}">
+                                        <input class="add_button" type="submit" value="{% if customer.kinbrio_id.is_some() %}Reimport{%else%}Import{%endif%}" /> 
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                                <p><b>Invoices</b></p>
+                                {% for invoice in invoices %}
+                                <div class="white-backed bump">
+                                    {{ Self::get_str(self, invoice.document_number) }} | {{ Self::get_str(self, invoice.status) }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="backed col-sm-12 col-md-12 col-lg-12">
+                            <p>What the hell is <a target="_blank" href="https://akaunting.com/"><u>Akaunting</u></a>
+                                and <a target="_blank" href="/open-source-book-keeping">why do I care</a>?</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            window.addEventListener('load', function () {
+                post_form("akaunting_form", "/akaunting", data => {
+                    let key = "{{akaunting_options.key}}"
+                    data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+                    data.owner_key = "{{organization.owner_key}}"
+                    data.organization_key = "{{organization.key}}";
+                    data.last_sync = parseInt("{{akaunting_options.last_sync}}") || 0;
+                    data.created = parseInt("{{akaunting_options.created}}") || 0;
+                    data.updated = parseInt("{{akaunting_options.updated}}") || 0;
+                    return data
+                }, (response_text) => {
+                    window.location.reload()
+                });
+            })
+        </script>
+        {% endblock %}

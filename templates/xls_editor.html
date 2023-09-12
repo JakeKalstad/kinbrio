@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if file.name.len() > 0 %}{{file.name}}{%else%}Create File{% endif %}{% endblock %}
+{% block description %}{% endblock %}
+
+{% block head %}
+{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justified">
+        <div class="content">
+            <div class="backed col-sm-12 col-md-12 col-lg-12">
+                
+            </div>
+        </div>
+    </div>
+    <script src="/fs/js/sheetjs-0.20.0.full.min.js"></script>
+    <script>
+        window.addEventListener('load', function () {
+            console.dir(XLSX)
+        })
+    </script>
+{% endblock %}

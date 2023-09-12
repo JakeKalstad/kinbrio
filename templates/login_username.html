@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+{% block description %}Login to Kinbrio{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="section">
+    <div class="heading_div">
+      <h1>Welcome back!</h1>
+      <h2>Authenticate Securely Using Your <a href="https://matrix.org/about/">Matrix</a> Account</h2>
+      <h3>(Or Register <a href="/register">Here</a>)</h3>
+    </div>
+    <div class="row justified">
+      <div class="content">
+        <form id="login_form"  action="/login" method="post" enctype="multipart/form-data">
+          <label for="uid">Matrix User ID</label>
+          <input type="text" name="uid" id="uid" placeholder="@user:matrix.org" />
+
+          <label for="secret">Password</label>
+          <input type="password" name="secret" id="secret" placeholder="Password" />
+          <input type="submit" class="add_button" value="Login" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', function () {
+    post_form("login_form", "/login", data => {
+      data.homeserver = "https://matrix-client.matrix.org";
+      return data
+    }, () => { window.location.href = "/" });
+  })
+</script>
+{% endblock %}

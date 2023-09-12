@@ -1,0 +1,181 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if board.name.len() > 0 %}{{board.name}}{%else%}Create Board{% endif %}{% endblock %}
+{% block description %}{{board.description}}{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justified">
+    <div class="center">
+      <div class="backed col-sm-12 col-md-12 col-lg-12">
+        <h1>Board {{board.name}}</h1>
+        {% if board.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+        <button id="delete" class="delete_button center">🗑️ Delete</button>
+        {% endif %}
+        <div class="tabbed">
+
+          <input type="radio" id="tab1" name="css-tabs" {% if
+            board.key.to_string()=="00000000-0000-0000-0000-000000000000" %}checked{% endif %}>
+          {% if board.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+          <input type="radio" id="tab2" name="css-tabs" checked>
+          {% endif %}
+
+          <ul class="tabs">
+            <li class="tab"><label for="tab1">Details</label></li>
+            {% if board.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+            <li class="tab"><label for="tab2">View</label></li>
+            {% endif %}
+          </ul>
+          <div class="tab-content">
+            <div class="row justified">
+              <div class="content">
+                <form id="add_board_form">
+                  <label for="name">Name</label>
+                  <input type="text" name="name" id="name" placeholder="Name" value="{{board.name}}" />
+                  <label for="description">Description</label>
+                  <textarea name="description" id="description" placeholder="Description"
+                    value="{{board.description}}">{{board.description}}</textarea>
+                  <div>
+                    <label for="columns">Columns</label>
+                    <input type="text" name="columns" id="columns" value='{{board.columns.join(",")}}' />
+                  </div>
+                  <label>Lanes</label>
+                  <select id="lanes" multiple name="lanes">
+                    {% for status in crate::task::TaskStatus::iter() %}
+                    <option value='{{status.to_string().replace(" ", "")}}' {% if Self::lane_contained(self, status,
+                      board.lanes) %}selected{%endif%}>
+                      {{status.to_string()}}</option>
+                    {% endfor %}
+                  </select>
+                  <div>
+                    <label for="filter">Filter</label>
+                    <input type="text" name="filter" id="filter" value="{{board.filter}}" />
+                  </div>
+                  <div>
+                    <input type="submit" class="add_button"
+                      value="{% if board.name.len() == 0 %}Create board!{%else%}Update board{% endif %}" />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          {% if board.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+          <div class="tab-content">
+            <div class="container">
+              <div class="row justified">
+                {% for lane in board.lanes %}
+                <div class="backed col-sm-12 col-md-4 col-lg-3">
+                  <h2>{{Self::lane_name(self, lane)}}</h2>
+                  <div class="row container">
+                    {% for task in Self::get_tasks(self, lane.to_string(), tasks) %}
+                    <div class="col-sm-12 col-md-12 col-lg-6">
+                      <form id="add_task_form_{{task.key}}">
+                        <a href="/task/{{task.key}}"><b>{{task.name}}</b></a>
+                        <hr />
+                        {{task.description}}
+                        <hr />
+                        <div class="row container">
+                          <div class="col-sm-12 col-md-12 col-lg-6">
+                            <label>Assign</label>
+                            <select name="assignee_key">
+                              <option value='{{uuid::Uuid::nil()}}' {% if task.assignee_key==uuid::Uuid::nil()
+                                %}selected{% endif %}>Unassigned</option>
+                              {% for u in users %}
+                              <option value='{{u.key}}' {% if task.assignee_key==u.key %}selected{% endif %}>
+                                {{u.to_string()}}
+                              </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <div class="col-sm-12 col-md-12 col-lg-6">
+                            <label>Status</label>
+                            <select name="status">
+                              {% for status in TaskStatus::iter() %}
+                              <option value='{{status.to_string().replace(" ", "")}}' {% if status==task.status %}selected{% endif %}>
+                                {{status.to_string()}}
+                              </option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                        </div>
+                        <input type="submit" class="add_button" value="Update Task" />
+                      </form>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('load', function () {
+        {% if board.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+        send_delete("delete", "/board/{{board.key}}", (deleted, res) => {
+          if (deleted) {
+            window.location.href = `/`
+          }
+        })
+        {% endif %}
+        post_form("add_board_form", "/board", data => {
+          let key = "{{board.key}}"
+          data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+          data.organization_key = "{{user.organization_key}}"
+          data.owner_key = "{{user.key}}"
+          data.name = data.name || "";
+          data.description = data.description || "";
+          data.columns = (data.columns || []).split(",");
+          let selected_lanes = document.getElementById("lanes").selectedOptions;
+          data.lanes = [];
+          for (var i = 0; i < selected_lanes.length; i++) {
+            data.lanes.push(selected_lanes[i].value)
+          }
+          data.filter = data.filter || "";
+          data.created = data.created || 0;
+          data.updated = data.updated || 0;
+          return data;
+        }, (response_text) => {
+          let object = JSON.parse(response_text);
+          window.location.href = `/board/${object.key}`
+        });
+
+        {% for lane in board.lanes %}
+        {% for task in Self:: get_tasks(self, lane.to_string(), tasks) %}
+        post_form("add_task_form_{{task.key}}", "/task", data => {
+          let key = "{{task.key}}"
+          data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+          data.organization_key = "{{user.organization_key}}"
+          data.owner_key = "{{user.key}}"
+          data.project_key = "{{task.project_key}}"
+          data.estimated_quarter_days = num_from_string("{{task.estimated_quarter_days}}")
+          data.due = parseInt("{{task.due}}");
+          data.start = parseInt("{{task.start}}");
+          data.name = "{{ task.due }}";
+          data.description = "{{ task.description }}";
+          data.tags = "{{ task.tags }}";
+          data.status = data.status;
+          data.assignee_key = data.assignee_key;
+          data.created = parseInt("{{task.created}}");
+          data.updated = Math.floor(new Date().getTime() / 1000);
+          return data;
+        }, (response_text) => {
+          window.location.href = `/board/{{board.key}}`
+        });
+        {% endfor %}
+        {% endfor %}
+      })
+
+
+    </script>
+    {% endblock %}

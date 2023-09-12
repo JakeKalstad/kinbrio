@@ -1,0 +1,6 @@
+{
+    "git-blame.gitWebUrl": "",
+    "rust-analyzer.linkedProjects": [
+        "./kinbot/matrix_bot/Cargo.toml"
+    ]
+}

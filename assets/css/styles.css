@@ -1,0 +1,508 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji', sans-serif;
+    line-height: 1.4;
+    margin-top: 20px; 
+    color: #1f2129;
+    background: #fdfdfd;
+}
+
+img {
+    border-radius: 5px 5px 0 0;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+}
+
+.card_container {
+    padding: 2px 16px;
+}
+
+.card {
+    background-color:#EEFCFE;
+}
+
+.container .card {
+    padding: 10px;
+}
+
+#menu {
+    background: #EEFCFE;
+    color: #444; 
+    border: .0625rem solid var(#444);
+    margin:0;
+}
+nav a, nav a:visited {
+    color: black;
+    font-weight: bolder;
+}
+nav label {
+    color: black;
+    font-weight: bolder;
+}
+h4 {
+    text-align: left;
+}
+.delete_button {
+    background: #ff000087;
+    color: rgba(255, 253, 253, 0.904);
+    border-color: #FFDDC1;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
+
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    border: 0;
+    font-size: 16px;
+    font-weight: bold;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    margin: 4px;
+}
+ul.pick_list {
+    margin: 12px;
+    list-style-type: none;
+}
+
+ul.pick_list li a {
+    padding: 10px;
+    border: white solid 1px;
+    background-color: #e1e8ff;
+}
+
+input[type="text"] {
+    border: 1px solid gray;
+}
+
+.button {
+    display: inline-flex;
+    background: #FCFCD4;
+    margin: 4px;
+    border-radius: 5px;
+    color: black;
+    font-weight: bold;
+    border: 2px solid #0b8ae694;
+    padding: 0.5em;
+    text-decoration: none;
+}
+
+.button:focus,
+.button:hover {
+    background: #e1e8ffa4;
+    color: black;
+    font-weight: bold;
+}
+
+
+input[type="submit"].add_button {
+    background: #90F8B5;
+    color: #1f2129;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: bold;
+    font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
+    padding: 7px 20px;
+    text-align: center;
+    text-decoration: none;
+    border: 2px outset #fff;
+    font-size: 14px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    margin: 2px;
+}
+
+
+.col-12>input[type="submit"] {
+    background: #f0f4ff;
+    border-style: outset;
+    border-color: white;
+}
+
+.list_form {
+    background-color: #EEFCFE;
+    border: none;
+}
+
+form {
+    background-color: #bfc3cf8a;
+    border: 1px solid black;
+    max-width: 420px;
+}
+
+form input {
+    width: 100%;
+}
+
+form button[type=submit] {
+    display: block;
+    margin: 20px auto 0;
+    width: 150px;
+    height: 40px;
+    border-radius: 25px;
+    border: none;
+    color: #eee;
+    font-weight: 700;
+    box-shadow: 1px 4px 10px 1px #aaa;
+
+    background: #207cca;
+    background: -moz-linear-gradient(left, #207cca 0%, #9f58a3 100%);
+    background: -webkit-linear-gradient(left, #207cca 0%, #9f58a3 100%);
+    background: linear-gradient(to right, #207cca 0%, #9f58a3 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#207cca', endColorstr='#9f58a3', GradientType=1);
+}
+
+
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: white;
+    border: 1px solid black;
+    padding: 8px;
+    margin: 0;
+    width: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    cursor: inherit;
+    line-height: inherit;
+
+    z-index: 1;
+
+    outline: none;
+}
+
+.select {
+    display: grid;
+    grid-template-areas: "select";
+    align-items: center;
+    position: relative;
+
+    min-width: 15ch;
+    max-width: 30ch;
+    border: 1px solid var(--select-border);
+    border-radius: 0.25em;
+    padding: 0.25em 0.5em;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1.1;
+
+    background: linear-gradient(to bottom, #ffffff 0%, #e5e5e5 100%);
+}
+
+select[multiple] {
+    padding-right: 0;
+    height: 7rem;
+}
+
+.select::after {
+    grid-area: select;
+    content: "";
+    justify-self: end;
+    width: 0.8em;
+    height: 0.5em;
+    background-color: var(--select-arrow);
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+}
+
+select:focus+.focus {
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border: 2px solid var(--select-focus);
+    border-radius: inherit;
+}
+
+.wrapper {
+    display: flex;
+}
+
+input[type="submit"] {
+    background-color: #e1e8ff;
+    border-style: outset;
+    color: black;
+    border-style: outset;
+    height: 50px;
+    font: bold 15px arial, sans-serif;
+    text-shadow: none;
+}
+
+.block {
+    background-color: #84a6adbd;
+    border: 2px solid grey;
+    box-shadow: grey 0px 0px 8px 0px;
+}
+
+.calendar {
+    background-color: rgba(245, 245, 245, 0.582);
+}
+
+.day {
+    background-color: rgb(255, 255, 255);
+    border: 2px dotted rgba(119, 138, 156, 0.726);
+}
+
+.emphasized {
+    -webkit-text-stroke-width: 0.03em;
+    -webkit-text-stroke-color: #EEFCFE;
+}
+
+a {
+    color: #5f62d9
+}
+
+a:link {
+    color: #5f62d9
+
+}
+
+.tabbed {
+    overflow-x: hidden;
+    /* so we could easily hide the radio inputs */
+    /* margin: 32px 0; */
+    /* padding-bottom: 16px; */
+    border-bottom: 1px solid #ccc;
+}
+
+.tabbed [type="radio"] {
+    /* hiding the inputs */
+    display: none;
+}
+
+.tabs {
+    display: flex;
+    align-items: stretch;
+    list-style: none;
+    padding: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+@media screen and (max-width: 684px) {
+    .tabs {
+        flex-wrap: nowrap;
+        flex-direction: column;
+    }
+}
+
+.tab>label {
+    display: block;
+    margin-bottom: -1px;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    background: #eee;
+    color: #000000;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+
+.tab:hover label {
+    border-top-color: #333;
+    color: #333;
+}
+
+.tab-content {
+    display: none;
+}
+
+/* As we cannot replace the numbers with variables or calls to element properties, the number of this selector parts is our tab count limit */
+.tabbed [type="radio"]:nth-of-type(1):checked~.tabs .tab:nth-of-type(1) label,
+.tabbed [type="radio"]:nth-of-type(2):checked~.tabs .tab:nth-of-type(2) label,
+.tabbed [type="radio"]:nth-of-type(3):checked~.tabs .tab:nth-of-type(3) label,
+.tabbed [type="radio"]:nth-of-type(4):checked~.tabs .tab:nth-of-type(4) label,
+.tabbed [type="radio"]:nth-of-type(5):checked~.tabs .tab:nth-of-type(5) label,
+.tabbed [type="radio"]:nth-of-type(6):checked~.tabs .tab:nth-of-type(6) label {
+    border-bottom-color: #fff;
+    border-top-color: #B721FF;
+    background: #fff;
+    color: #222;
+}
+
+.tabbed [type="radio"]:nth-of-type(1):checked~.tab-content:nth-of-type(1),
+.tabbed [type="radio"]:nth-of-type(2):checked~.tab-content:nth-of-type(2),
+.tabbed [type="radio"]:nth-of-type(3):checked~.tab-content:nth-of-type(3),
+.tabbed [type="radio"]:nth-of-type(4):checked~.tab-content:nth-of-type(4),
+.tabbed [type="radio"]:nth-of-type(5):checked~.tab-content:nth-of-type(5),
+.tabbed [type="radio"]:nth-of-type(6):checked~.tab-content:nth-of-type(6) {
+    display: block;
+} 
+
+a.button {
+    background: #FCFCD4;
+    border: 2px outset #0b8ae694;
+    padding: 8px;
+    color: black;
+}
+
+a.button:hover {
+    background: #46b2ff59;
+}
+
+.row>.card>p>b {
+    font-size: 1.3rem;
+}
+
+.row>.col-sm-12.col-md-6>.card>p>b {
+    font-size: 1.3rem;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+h1,h2,h3,h4 {
+    margin-bottom:0px;
+}
+
+.backed {
+    box-shadow: 0 4px 8px 0 rgba(255, 255, 255, 0.2);
+    border-radius: 5px;
+    margin: 8px;
+    padding: 8px;
+    border: 2px solid rgba(0, 0, 0, 0.123);
+    background-color: #EEFCFE;
+}
+
+.white-backed {
+    background-color: #ffffff;
+    margin: 6px;
+    border-radius:6px;
+}
+
+.heading_div {
+    background-color: #EEFCFE; 
+    text-align: center; 
+    padding: 0 3% 0 3%;
+}
+
+#content {
+    text-align: center;
+    height: 100%;
+    width: 95%;
+    padding: 0 10px;
+    margin-left: auto;
+    margin-right: auto;
+    -webkit-text-stroke-width: 0.01em;
+    -webkit-text-stroke-color: #9df3ff;
+}
+
+@media screen and (min-width: 1024px) {
+    #content {
+        width: 80%;
+    }
+}
+
+#add_note_form {
+    text-align: initial;
+}
+
+.justified {
+    justify-content: center;
+}
+
+a:visited {
+    color: #000000;
+}
+
+textarea {
+    width: 100%;
+}
+
+.gantt {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    background: repeating-linear-gradient(to right, #f2f2f2, #ddd 2px, #fff 2px, #fff 14.25%);
+}
+
+.gantt div {
+    padding: 10px;
+}
+
+.gantt .head {
+    text-align: center;
+    font-weight: 700;
+    color: #fff;
+    background: #103a99;
+}
+
+.dot {
+    padding: 5px;
+    display: inline-block;
+    color: black;
+    font-size: large;
+    font-weight: bold;
+}
+
+.bump {
+    border: 3px outset #EEFCFE;
+    border-radius: 6px;
+}
+
+
+input[type=checkbox]#assistant {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+
+label#assistant {
+    -webkit-appearance: push-button;
+    -moz-appearance: button;
+    appearance: button;
+    display: inline-block;
+    margin: 60px 0 10px 0;
+    cursor: pointer;
+}
+
+/* Default State */
+.assistant-window {
+    display: none;
+    width: 2px;
+    height: 2px;
+    z-index: 9999;
+}
+
+/* Toggled State */
+input[type=checkbox]#assistant:checked+.assistant-window {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 428px;
+    height: auto;
+}
+
+input[type=checkbox]#assistant:checked+.assistant-window>iframe {
+    display: block !important;
+    height: 800px;
+    width: 400px;
+}
+
+.assistant-window>iframe {
+    width: 2px;
+    height: 2px;
+}
+
+.checkbutton button {
+    display: none;
+}

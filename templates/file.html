@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if file.name.len() > 0 %}{{file.name}}{%else%}Add File{% endif %}{% endblock %}
+{% block description %}{{file.description}}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justified">
+        <div class="backed col-sm-12 col-md-12 col-lg-12">
+            <h1>{{file.name}}</h1>
+            {% if file.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+            <button id="delete" class="delete_button center">🗑️ Delete</button>
+            {% endif %}
+            <div class="row justified">
+                <div class="content">
+                    <form id="add_file_form" action="/file" method="post" enctype="multipart/form-data">
+                        <p>
+                            <label>Add file: </label><br />
+                            <input type="file" name="file" />
+                        </p>
+                        <div class="col-sm-12 col-md-8 col-lg-5">
+                            <label for="name">Name</label>
+                            <input type="text" name="name" id="name" placeholder="File Name" value="{{file.name}}" />
+                        </div>
+                        <div class="col-sm-12 col-md-8 col-lg-5">
+                            <label for="tags">Tags</label>
+                            <input type="text" name="tags" id="tags" placeholder="Tags" value="{{file.tags}}" />
+                        </div>
+                        <input type="text" style="display:none" name="key" id="key" value="{{file.key}}" />
+                        <input type="text" style="display:none" name="organization_key" id="organization_key"
+                            value="{{file.organization_key}}" />
+                        <input type="text" style="display:none" name="association_type" id="association_type"
+                            value="{{file.association_type.to_string()}}" />
+                        <input type="text" style="display:none" name="association_key" id="association_key"
+                            value="{{file.association_key}}" />
+                        <input type="text" style="display:none" name="url" id="url" value="{{file.url}}" />
+                        <input type="text" style="display:none" name="format" id="format" value="{{file.format}}" />
+                        <input type="text" style="display:none" name="hash" id="hash" value="{{file.hash}}" />
+                        <input type="text" style="display:none" name="size" id="size" value="{{file.size}}" />
+                        <div>
+                            <label for="description">Description</label>
+                            <textarea name="description" id="description" placeholder="Description"
+                                value="{{file.description}}">{{file.description}}</textarea>
+                        </div>
+                        <div>
+                            <input type="submit" class="add_button"
+                                value="{% if file.key.is_nil() %}Create file!{%else%}Update file{% endif %}" />
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', function () {
+        {% if file.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+        send_delete("delete", "/file/{{file.key}}", (deleted, res) => {
+            if (deleted) {
+                window.location.href = `/entity/{{file.association_type.to_string()}}/{{file.association_key}}`
+            }
+        })
+        {% endif %}
+    })
+</script>
+{% endblock %}

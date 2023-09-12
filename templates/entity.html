@@ -1,0 +1,203 @@
+{% extends "layout.html" %}
+
+{% block title %}{% if entity.name.len() > 0 %}{{entity.name}}{%else%}Create Entity{% endif %}{% endblock %}
+{% block description %}{{entity.description}}{% endblock %}
+
+{% block head %}
+<style>
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row justified">
+    <div class="backed col-sm-12 col-md-12 col-lg-12">
+      <h1>Entity {{entity.name}}</h1>
+      <div class="row justified">
+        <div class="content">
+          {% if entity.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+          <a class="button" href="/contact/add/{{entity.key}}">➕ Add Contact</a>
+          <a class="button center" href="/note/add/Entity/{{entity.key}}">➕ Add Note</a>
+          <a class="button center" href="/file/add/Entity/{{entity.key}}">➕ Attach File</a>
+          <button id="delete" class="delete_button center">🗑️ Delete</button>
+          {% endif %}
+          {% if entity.external_accounting_id != "" %}
+          <a class="button" href="/entity/invoices/{{entity.key}}/{{entity.external_accounting_id}}">View Invoices</a>
+          {%endif%}
+          <div class="tabbed">
+            <input type="radio" id="tab1" name="css-tabs" checked>
+            <input type="radio" id="tab2" name="css-tabs">
+            <input type="radio" id="tab3" name="css-tabs">
+            <ul class="tabs">
+              <li class="tab"><label for="tab1">Details</label></li>
+              <li class="tab"><label for="tab2">Contacts</label></li>
+              <li class="tab"><label for="tab3">Documents</label></li>
+            </ul>
+            <div class="tab-content">
+              <form id="add_entity_form">
+                <div>
+                  <label for="name">Name</label>
+                  <input type="text" name="name" id="name" placeholder="Name" value="{{entity.name}}" />
+                </div>
+                <div>
+                  <label for="description">Description</label>
+                  <textarea name="description" id="description" placeholder="Description"
+                    value="{{entity.description}}">{{entity.description}}</textarea>
+                </div>
+
+                <div>
+                  <label for="name">Web URL (https:://acme.com)</label>
+                  <input type="text" name="web_url" id="web_url" placeholder="Web URL" value="{{entity.web_url}}" />
+                </div>
+                <div>
+                  <label for="matrix_room_url">Matrix Server Room URL (https://matrix.to/#/#SanturceSoftware:matrix.org)
+                  </label>
+                  <input type="text" name="matrix_room_url" id="matrix_room_url" placeholder="matrix_room_url"
+                    value="{{entity.matrix_room_url}}" />
+                </div>
+                <div>
+                  <label for="web_url">Web URL</label>
+                  <input type="text" name="web_url" id="web_url" placeholder="Web URL" value="{{entity.web_url}}" />
+                </div>
+                <div>
+                  <label for="avatar_url">avatar_url</label>
+                  <input type="text" name="avatar_url" id="avatar_url" placeholder="avatar_url"
+                    value="{{entity.avatar_url}}" />
+                </div>
+                <div>
+                  <label for="address_primary">Address</label>
+                  <input type="text" name="address_primary" id="address_primary" placeholder="Address"
+                    value="{{entity.address_primary}}" />
+                </div>
+                <div>
+                  <label for="address_unit">Unit</label>
+                  <input type="text" name="address_unit" id="address_unit" placeholder="Unit"
+                    value="{{entity.address_unit}}" />
+                </div>
+                <div>
+                  <label for="city">City</label>
+                  <input type="text" name="city" id="city" placeholder="City" value="{{entity.city}}" />
+                </div>
+                <div>
+                  <label for="state">State</label>
+                  <input type="text" name="state" id="state" placeholder="State" value="{{entity.state}}" />
+                </div>
+                <div>
+                  <label for="zip_code">Zip</label>
+                  <input type="text" name="zip_code" id="zip_code" placeholder="Zipcode" value="{{entity.zip_code}}" />
+                </div>
+                <div>
+                  <label for="country">Country</label>
+                  <input type="text" name="country" id="country" placeholder="Country" value="{{entity.country}}" />
+                </div>
+                <div>
+                  <input type="submit" class="add_button"
+                    value="{% if entity.name.len() == 0 %}Create entity!{%else%}Update entity{% endif %}" />
+                </div>
+              </form>
+            </div>
+
+            <div class="tab-content">
+              {% if contacts.len() > 0 %}
+              <h3>Contacts</h3>
+              <ul class="pick_list">
+                {% for contact in contacts %}
+                <li><a class="button" href="/contact/{{contact.key}}">{{contact.first_name}} {{contact.last_name}}</a>
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+            <div class="tab-content">
+              <div class="row justified ">
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  {% if notes.len() > 0 %}
+                  <h3>Notes & Docs</h3>
+                  {% for note in notes %}
+                  <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                    <a href="/note/{{note.key}}">
+                      <p><b>{{note.title}}</b></p>
+                    </a>
+                  </div>
+                  {% endfor %}
+                  {%else%}
+                  <div class="white-backed">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <h3>Add Your First Note</h3>
+                      <h4>Create a note about this entity, these are private to you and allow you to keep internal notes on vendors, clients, contractors or any other entitys you keep track of</h4>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <a class="button" href="/note/add/Entity/{{entity.key}}">Add Note</a>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                  {% if files.len() > 0 %}
+                  <h3>Files</h3>
+                  {% for file in files %}
+                  <div class="white-backed bump col-sm-12 col-md-4 col-lg-3">
+                    <a href="/file/{{file.key}}">
+                      <p><b>{{file.name}}</b></p>
+                      <hr />
+                      <p>{{file.description}}</p>
+                    </a>
+                  </div>
+                  {% endfor %}
+                  {%else%}
+                  <div class="white-backed">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <h3>Attach Your First File</h3>
+                      <h4>Attach a file relating to this entity. Anything from receipts to documents that you want organized with this entity.
+                      </h4>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                      <a class="button" href="/file/add/Entity/{{entity.key}}">Add File</a>
+                    </div>
+                  </div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    window.addEventListener('load', function () {
+      {% if entity.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
+      send_delete("delete", "/entity/{{entity.key}}", (deleted, res) => {
+        if (deleted) {
+          window.location.href = `/`
+        }
+      })
+      {% endif %}
+      post_form("add_entity_form", "/entity", data => {
+        let key = "{{entity.key}}"
+        data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
+        data.organization_key = "{{user.organization_key}}"
+        data.external_accounting_id = data.external_accounting_id || "{{entity.external_accounting_id}}"
+        data.owner_key = "{{user.key}}"
+        data.entity_type = data.entity_type || "Client";
+        data.name = data.name || "";
+        data.description = data.description || "";
+        data.matrix_room_url = data.matrix_room_url || "";
+        data.web_url = data.web_url || "";
+        data.avatar_url = data.avatar_url || "";
+        data.address_primary = data.address_primary || "";
+        data.address_unit = data.address_unit || "";
+        data.city = data.city || "";
+        data.state = data.state || "";
+        data.zip_code = data.zip_code || "";
+        data.country = data.country || "";
+        data.created = data.created || 0;
+        data.updated = data.updated || 0;
+        return data;
+      }, (response_text) => {
+        let object = JSON.parse(response_text);
+        window.location.href = `/entity/${object.key}`
+      });
+    })
+  </script>
+  {% endblock %}
