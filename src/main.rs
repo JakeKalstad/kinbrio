@@ -143,6 +143,6 @@ async fn main() -> tide::Result<()> {
     app.at("/fs/*").get(serve_dir);
     // app.at("/fs").serve_dir("./assets")?;
 
-    app.listen("127.0.0.1:8080").await?;
+    app.listen(":8080").await?;
     Ok(())
 }
