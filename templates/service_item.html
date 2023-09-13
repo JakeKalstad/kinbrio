@@ -15,10 +15,9 @@
   <div class="row justified">
     <div class="backed col-sm-12 col-md-12 col-lg-12">
       <h1>
-       {% if service_item.name.len() == 0 %}Create Service / Item{%else%}Update {{service_item.service_value_type.to_string()}}: {{service_item.name}}{% endif %}
+       {% if service_item.name.len() == 0 %}Create Service / Item{%else%}Update {{service_item.service_item_type.to_string()}}: {{service_item.name}}{% endif %}
        </h1>
-      <button id="delete" class="delete_button center">🗑️ Delete</button>
-      {% endif %}
+       {% if service_item.name.len() != 0 %}<button id="delete" class="delete_button center">🗑️ Delete</button>{% endif %}
       <div class="row justified">
         <div class="content">
           <form id="add_service_item_form">
@@ -55,9 +54,9 @@
                 <div class="col-sm-4 col-md-4 col-lg-4">
                   <label>Select Currency</label>
                   <select name="currency">
-                    <option value='USD' {% if "USD"==service_item.currency%}selected{% endif %}>USD</option>
-                    <option value='CAD' {% if "CAD"==service_item.currency%}selected{% endif %}>CAD</option>
-                    <option value='EUR' {% if "UEURSD"==service_item.currency%}selected{% endif %}>EUR</option>
+                    <option value='USD' {% if "USD" == service_item.currency %}selected{% endif %}>USD</option>
+                    <option value='CAD' {% if "CAD" == service_item.currency%}selected{% endif %}>CAD</option>
+                    <option value='EUR' {% if "UEURSD" == service_item.currency %}selected{% endif %}>EUR</option>
                   </select>
                 </div>
                 <div class="col-sm-8 col-md-8 col-lg-8">
@@ -70,7 +69,7 @@
 
             <div>
               <input type="submit" class="add_button"
-                value="{% if service_item.name.len() == 0 %}Create service item!{%else%}Update {{service_item.service_value_type.to_string()}}{% endif %}" />
+                value="{% if service_item.name.len() == 0 %}Create service item!{%else%}Update {{service_item.service_item_type.to_string()}}{% endif %}" />
             </div>
           </form>
         </div>
