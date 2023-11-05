@@ -36,7 +36,7 @@ to run the app it's `cargo run` same for the kinbot/matrix-bot project.
 
 `sh start-gpt.sh` will start a server for the AI assistant dashboard widget we frame in.
 `sh startt-matrix-bot.sh` 
-# SPECS N SHEIT
+# SPECS 
 
 ## Project management MVP
 Create an organization + user
