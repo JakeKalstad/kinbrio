@@ -249,7 +249,7 @@
     let start = parseInt("{{project.start}}");
     document.getElementById("start").value = (start == 0 ? new Date() : new Date(start * 1000)).toISOString().split('T')[0]
     post_form("add_project_form", "/project", data => {
-      let key = "{{project.key}}"
+      const key = "{{project.key}}"
       data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
       data.organization_key = "{{user.organization_key}}"
       data.owner_key = "{{user.key}}"
@@ -263,7 +263,7 @@
       data.updated = data.updated || 0;
       return data;
     }, (response_text) => {
-      let object = JSON.parse(response_text);
+      const object = JSON.parse(response_text);
       window.location.href = `/project/${object.key}`
     });
 

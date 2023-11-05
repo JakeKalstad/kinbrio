@@ -4,6 +4,7 @@ body {
     margin-top: 20px; 
     color: #1f2129;
     background: #fdfdfd;
+    width:100%;
 }
 
 img {
@@ -99,13 +100,12 @@ input[type="text"] {
 
 
 input[type="submit"].add_button {
-    background: #90F8B5;
+    background: #bbffd3;
     color: #1f2129;
     border-radius: 8px;
     cursor: pointer;
     display: inline-block;
     font-weight: bold;
-    font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto, sans-serif;
     padding: 7px 20px;
     text-align: center;
     text-decoration: none;
@@ -250,7 +250,8 @@ input[type="submit"] {
 }
 
 .emphasized {
-    -webkit-text-stroke-width: 0.03em;
+    font-size: 1.5rem;
+    -webkit-text-stroke-width: 0.01em;
     -webkit-text-stroke-color: #EEFCFE;
 }
 
@@ -289,8 +290,7 @@ a:link {
         flex-wrap: nowrap;
         flex-direction: column;
     }
-}
-
+} 
 .tab>label {
     display: block;
     margin-bottom: -1px;
@@ -298,7 +298,7 @@ a:link {
     border: 1px solid #ccc;
     background: #eee;
     color: #000000;
-    font-size: 12px;
+    font-size: 1rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -455,10 +455,38 @@ textarea {
 }
 
 
-input[type=checkbox]#assistant {
+input[type=radio]#assistant {
     position: absolute;
     top: -9999px;
     left: -9999px;
+}
+
+input[type=radio]#minimize_assistant {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+}
+label#minimize_assistant {
+    -webkit-appearance: push-button;
+    -moz-appearance: button;
+    appearance: button;
+    display: inline-block;
+    margin: 60px 0 10px 0;
+    cursor: pointer;
+}
+
+/* Toggled State */
+input[type=radio]#minimize_assistant:checked+.assistant-window {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 428px;
+    height: auto;
 }
 
 label#assistant {
@@ -479,7 +507,7 @@ label#assistant {
 }
 
 /* Toggled State */
-input[type=checkbox]#assistant:checked+.assistant-window {
+input[type=radio]#assistant:checked+.assistant-window {
     display: block;
     position: fixed;
     top: 0;
@@ -489,19 +517,16 @@ input[type=checkbox]#assistant:checked+.assistant-window {
     margin-left: auto;
     margin-right: auto;
     width: 428px;
-    height: auto;
+    height: 850px;
 }
 
-input[type=checkbox]#assistant:checked+.assistant-window>iframe {
+input[type=radio]#assistant:checked+.assistant-window>iframe {
     display: block !important;
     height: 800px;
     width: 400px;
+    background-color: #88f0ffb0;
 }
 
-.assistant-window>iframe {
-    width: 2px;
-    height: 2px;
-}
 
 .checkbutton button {
     display: none;

@@ -66,7 +66,7 @@
     })
     {% endif %}
     post_form("add_milestone_form", "/milestone", data => {
-      let key = "{{milestone.key}}"
+      const key = "{{milestone.key}}"
       data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
       data.organization_key = "{{user.organization_key}}"
       data.owner_key = "{{user.key}}"
@@ -81,7 +81,7 @@
       data.updated = data.updated || 0;
       return data;
     }, (response_text) => {
-      let object = JSON.parse(response_text);
+      const object = JSON.parse(response_text);
       window.location.href = `/milestone/${object.key}`
     });
     let due = parseInt("{{milestone.due}}");

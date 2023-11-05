@@ -174,7 +174,7 @@
       })
       {% endif %}
       post_form("add_entity_form", "/entity", data => {
-        let key = "{{entity.key}}"
+        const key = "{{entity.key}}"
         data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
         data.organization_key = "{{user.organization_key}}"
         data.external_accounting_id = data.external_accounting_id || "{{entity.external_accounting_id}}"
@@ -195,7 +195,7 @@
         data.updated = data.updated || 0;
         return data;
       }, (response_text) => {
-        let object = JSON.parse(response_text);
+        const object = JSON.parse(response_text);
         window.location.href = `/entity/${object.key}`
       });
     })

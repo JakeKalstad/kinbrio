@@ -47,11 +47,11 @@
       </div>
       <div class="col-sm-6 col-md-3 col-lg-2 flex-center" style="justify-content: center; text-align: center">
         <label for="assistant">🤖 AI Assistant</label>
-        <input class="checkbutton" type="checkbox" id="assistant">
+        <input class="checkbutton" name="ai-toggle" type="radio" id="assistant">
         <div class="backed assistant-window">
-          <label for="assistant">🗕 Minimize</label>
-          <input class="checkbutton" type="checkbox" id="assistant">
-          <iframe style="display:none" loading="lazy" src="http://localhost:3000"></iframe>
+          <label for="minimize_assistant">🗕 Minimize</label>
+          <input class="checkbutton" name="ai-toggle" type="radio" id="minimize_assistant">
+          <iframe style="display:none;" height="800px"    width="400px" loading="lazy" src="http://localhost:3000"></iframe>
         </div>
       </div>
       {% endif -%}

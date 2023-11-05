@@ -42,18 +42,16 @@
 <script>
     window.addEventListener('load', function () {
         post_form("user_form", "/users/{{user.key}}", data => {
-            let key = "{{user.key}}";
+            const key = "{{user.key}}";
             data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key;
             data.organization_key = "{{user.organization_key}}";
-            data.matrix_home_server = "{{user.matrix_home_server}}";
-            data.matrix_user_id = "{{user.matrix_user_id}}";
             data.email = data.email || "";
             data.secret = "";
             data.created = data.created || 0;
             data.updated = data.updated || 0;
             return data;
         }, (response_text) => {
-            let object = JSON.parse(response_text);
+            const object = JSON.parse(response_text);
             window.location.href = `/account`;
         });
     })

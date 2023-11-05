@@ -5,7 +5,11 @@ function num_from_string(inp) {
     }
     return n
 }
-
+function set_value(element, val) {
+    if (element) {
+        element.value = val;
+    }
+}
 const dateForDateTimeInputValue = date => new Date(date.getTime() + new Date().getTimezoneOffset() * -60 * 1000).toISOString().slice(0, 19)
 
 function send_delete(button_id, url, cb) {
@@ -34,7 +38,6 @@ function post_form(form_id, url, validation, cb) {
     cb = cb || (() => { });
 
     var form = document.getElementById(form_id);
-    console.dir("WT2F")
     form.onsubmit = function (event) {
         event.preventDefault();
         var xhr = new XMLHttpRequest();
@@ -43,7 +46,6 @@ function post_form(form_id, url, validation, cb) {
         if (!formData) {
             return
         }
-        console.dir("WTF")
         xhr.open('POST', url)
         xhr.setRequestHeader("Content-Type", form.enctype||"application/json");
         xhr.send(JSON.stringify(formData));

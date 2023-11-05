@@ -7,27 +7,31 @@
     <div class="row justified">
         <div class="backed col-sm-12 col-md-12 col-lg-12">
             <h1>{{file.name}}</h1>
+            <a href="/files/{{file.format}}/{{file.organization_key}}/{{file.association_type.to_string()}}/{{file.association_key}}/{{file.name}}">
+                <img height="128" width="128" alt="📄 View Document" src="/files/{{file.format}}/{{file.organization_key}}/{{file.association_type.to_string()}}/{{file.association_key}}/{{file.name}}"/>
+            </a>
             {% if file.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
             <button id="delete" class="delete_button center">🗑️ Delete</button>
             {% endif %}
             <div class="row justified">
                 <div class="content">
                     <form id="add_file_form" action="/file" method="post" enctype="multipart/form-data">
+                        {% if file.key.to_string() == "00000000-0000-0000-0000-000000000000" %}\
                         <p>
                             <label>Add file: </label><br />
-                            <input type="file" name="file" />
+                            <input id="file_uploader" type="file" name="file" />
                         </p>
-                        <div class="col-sm-12 col-md-8 col-lg-5">
+                        {% endif %}
+                        <div class="col-sm-12 col-md-12 col-lg-12">
                             <label for="name">Name</label>
                             <input type="text" name="name" id="name" placeholder="File Name" value="{{file.name}}" />
                         </div>
-                        <div class="col-sm-12 col-md-8 col-lg-5">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
                             <label for="tags">Tags</label>
                             <input type="text" name="tags" id="tags" placeholder="Tags" value="{{file.tags}}" />
                         </div>
                         <input type="text" style="display:none" name="key" id="key" value="{{file.key}}" />
-                        <input type="text" style="display:none" name="organization_key" id="organization_key"
-                            value="{{file.organization_key}}" />
+                        <input type="text" style="display:none" name="organization_key" id="organization_key" value="{{file.organization_key}}" />
                         <input type="text" style="display:none" name="association_type" id="association_type"
                             value="{{file.association_type.to_string()}}" />
                         <input type="text" style="display:none" name="association_key" id="association_key"
@@ -54,10 +58,24 @@
 
 <script>
     window.addEventListener('load', function () {
+        document.getElementById("file_uploader").onchange = function(e) {
+            const files = event.target.files
+            if (files && files.length > 0) {
+                const filename = files[0].name
+                const extension = files[0].type
+                const splits = extension.split("/");
+                const name_input = document.getElementById("name")
+                name_input.value = filename
+                if (splits && splits.length > 0) { 
+                    const format_input = document.getElementById("format")
+                    format_input.value = splits[1]
+                }
+            }
+        };
         {% if file.key.to_string() != "00000000-0000-0000-0000-000000000000" %}
         send_delete("delete", "/file/{{file.key}}", (deleted, res) => {
             if (deleted) {
-                window.location.href = `/entity/{{file.association_type.to_string()}}/{{file.association_key}}`
+                window.location.href = `/{{file.association_type.to_string().to_lowercase()}}/{{file.association_key}}`
             }
         })
         {% endif %}

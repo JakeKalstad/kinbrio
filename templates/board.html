@@ -129,14 +129,14 @@
         })
         {% endif %}
         post_form("add_board_form", "/board", data => {
-          let key = "{{board.key}}"
+          const key = "{{board.key}}"
           data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
           data.organization_key = "{{user.organization_key}}"
           data.owner_key = "{{user.key}}"
           data.name = data.name || "";
           data.description = data.description || "";
           data.columns = (data.columns || []).split(",");
-          let selected_lanes = document.getElementById("lanes").selectedOptions;
+          const selected_lanes = document.getElementById("lanes").selectedOptions;
           data.lanes = [];
           for (var i = 0; i < selected_lanes.length; i++) {
             data.lanes.push(selected_lanes[i].value)
@@ -146,14 +146,14 @@
           data.updated = data.updated || 0;
           return data;
         }, (response_text) => {
-          let object = JSON.parse(response_text);
+          const object = JSON.parse(response_text);
           window.location.href = `/board/${object.key}`
         });
 
         {% for lane in board.lanes %}
         {% for task in Self:: get_tasks(self, lane.to_string(), tasks) %}
         post_form("add_task_form_{{task.key}}", "/task", data => {
-          let key = "{{task.key}}"
+          const key = "{{task.key}}"
           data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
           data.organization_key = "{{user.organization_key}}"
           data.owner_key = "{{user.key}}"

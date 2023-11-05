@@ -1,3 +1,7 @@
+# Kinbrio
+
+Business management platform to manage small business. Integration with LLama2 and Akaunting.
+
 `sudo apt update`
 
 `sudo apt upgrade`

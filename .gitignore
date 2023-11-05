@@ -3,3 +3,5 @@
 /kinbot/kinbot-gpt/models
 /kinbot/matrix_bot/targetgit 
 /kinbot/kinbot-gpt/models
+/deploy/sh
+/nginx.conf

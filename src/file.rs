@@ -1,7 +1,10 @@
+use std::io::Cursor;
 use std::str::FromStr;
 
 use crate::common::BufferedBytesStream;
 use askama::Template;
+use minio_rsc::Minio;
+use minio_rsc::provider::StaticProvider;
 use serde::{Deserialize, Serialize};
 use sqlx::pool::PoolConnection;
 use sqlx::postgres::PgQueryResult;
@@ -39,7 +42,7 @@ pub async fn get_associated_files(
         files.push(File {
             key: file.key.expect("key exists"),
             owner_key: file.owner_key.expect("owner_key exists"),
-            organization_key: file.owner_key.expect("organization_key exists"),
+            organization_key: file.organization_key.expect("organization_key exists"),
             hash: file.hash.expect("hash exists"),
             name: file.name.expect("name exists"),
             description: file.description.expect("description exists"),
@@ -77,7 +80,7 @@ pub async fn get_organization_files(
         files.push(File {
             key: file.key.expect("key exists"),
             owner_key: file.owner_key.expect("owner_key exists"),
-            organization_key: file.owner_key.expect("organization_key exists"),
+            organization_key: file.organization_key.expect("organization_key exists"),
             hash: file.hash.expect("hash exists"),
             name: file.name.expect("name exists"),
             description: file.description.expect("description exists"),
@@ -110,7 +113,7 @@ pub async fn get_file(conn: &mut PoolConnection<Postgres>, key: uuid::Uuid) -> F
     File {
         key: file.key.expect("key exists"),
         owner_key: file.owner_key.expect("owner_key exists"),
-        organization_key: file.owner_key.expect("organization_key exists"),
+        organization_key: file.organization_key.expect("organization_key exists"),
         hash: file.hash.expect("hash exists"),
         name: file.name.expect("name exists"),
         description: file.description.expect("description exists"),
@@ -269,6 +272,25 @@ pub async fn get(req: Request<State>) -> tide::Result {
     }
 }
 
+pub async fn get_file_fs(association_type: String, association_key: String, name: String) -> Result<reqwest::Response, minio_rsc::error::Error> {
+    let bucket_name = get_bucket_name(association_type, association_key);
+
+    let s3_url = std::env::var("S3_URL")
+    .expect("Missing `S3_URL` env variable, needed for running the server");
+    let static_provider = StaticProvider::new(
+        "Y8oJ5TXXk659r0a8Hxlh",
+        "J0S5VgsVbI9u77Jtwnihht1ZkWn1OTKAvGEpptBr",
+        None,
+    );
+    let minio_client = Minio::builder()
+    .endpoint(s3_url)
+    .provider(static_provider)
+    .secure(false)
+    .build()
+    .unwrap();
+    minio_client.get_object(bucket_name, name).await
+}
+
 pub async fn insert(req: Request<State>) -> tide::Result {
     let claims: user::UserJwtState = match user::read_jwt_cookie(req.cookie("token")) {
         Some(c) => c,
@@ -280,6 +302,7 @@ pub async fn insert(req: Request<State>) -> tide::Result {
     let mut conn = match req.state().db_pool.acquire().await {
         Ok(c) => c,
         Err(e) => {
+            println!("DB ERROR");
             return Ok(
                 tide::Response::builder(tide::StatusCode::InternalServerError)
                     .content_type(mime::PLAIN)
@@ -296,6 +319,7 @@ pub async fn insert(req: Request<State>) -> tide::Result {
         let mut key = "".to_string();
         let mut name = "".to_string();
         let mut description = "".to_string();
+        let mut format = "".to_string();
         let mut tags = "".to_string();
         let mut url = "".to_string();
         let mut organization_key = "".to_string();
@@ -304,8 +328,10 @@ pub async fn insert(req: Request<State>) -> tide::Result {
         let mut hash = "".to_string();
         let mut size = 0;
         
+        let mut buffer = vec![];
         while let Some(mut field) = multipart.next_field().await.expect("next field") {
             let f_name = field.name().clone().expect("get field name");
+            println!("{f_name}");
             if f_name == "name" {
                 name = field.text().await.expect("name multi field");
             } else if f_name == "key" {
@@ -326,8 +352,9 @@ pub async fn insert(req: Request<State>) -> tide::Result {
                 size = field.text().await.expect("size multi field").parse::<i64>().expect("Valid int64");
             } else if f_name == "url" {
                 url = field.text().await.expect("url multi field");
+            } else if f_name == "format" {
+                format = field.text().await.expect("format field");
             } else if f_name == "file" {
-                let mut buffer = vec![];
                 while let Some(chunk) = field
                     .chunk()
                     .await
@@ -335,14 +362,25 @@ pub async fn insert(req: Request<State>) -> tide::Result {
                 {
                     buffer.write_all(&chunk).await.expect("Write to s3buffer");
                 }
-                // let s3resp = put_object(lpath.clone(), &buffer).await.expect("msg");
-                // size = s3resp.bytes().len();
             }
         }
-        let ext_name =  name.clone();
-        let extension = ext_name.split(".").last().expect("Get last");
-        let format = extension.clone().to_owned();
-
+        let s3_url = std::env::var("S3_URL")
+        .expect("Missing `S3_URL` env variable, needed for running the server");
+        let static_provider = StaticProvider::new(
+            "Y8oJ5TXXk659r0a8Hxlh",
+            "J0S5VgsVbI9u77Jtwnihht1ZkWn1OTKAvGEpptBr",
+            None,
+        );
+        let minio_client = Minio::builder()
+        .endpoint(s3_url)
+        .provider(static_provider)
+        .secure(false)
+        .build()
+        .unwrap();
+      
+        let bucket_name = get_bucket_name(association_type.clone(), association_key.clone());
+        minio_client.make_bucket(bucket_name.clone(), true).await.unwrap_or_else(|_e| "Already Exists".to_string());
+        minio_client.put_object(bucket_name, name.clone(), buffer.into()).await.expect("Put buffer");
         let mut s = File::new(
             uuid::Uuid::from_str(claims.key.as_str()).expect("user key exists"),
             uuid::Uuid::from_str(organization_key.as_str()).expect("organization_key exists"),
@@ -350,7 +388,7 @@ pub async fn insert(req: Request<State>) -> tide::Result {
             uuid::Uuid::from_str(association_key.as_str()).expect("association_key exists"),
             url,
             hash,
-            name,
+            name.clone(),
             description,
             tags,
             format,
@@ -368,7 +406,7 @@ pub async fn insert(req: Request<State>) -> tide::Result {
                 &mut conn,
                 claims.matrix_home_server,
                 claims.matrix_user_id,
-                organization_key,
+                organization_key, 
                 claims.matrix_access_token,
                 &s,
             )
@@ -383,6 +421,9 @@ pub async fn insert(req: Request<State>) -> tide::Result {
         .build())
 }
 
+fn get_bucket_name(association_type: String, association_key:String) -> String {
+    format!("{}-{}-fs", association_type.to_lowercase(), association_key.to_lowercase())
+}
 // data types
 
 #[derive(PartialEq, Debug, Deserialize, Serialize, Clone, Copy, sqlx::Type)]

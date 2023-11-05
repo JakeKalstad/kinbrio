@@ -162,7 +162,7 @@
         <script>
             window.addEventListener('load', function () {
                 post_form("akaunting_form", "/akaunting", data => {
-                    let key = "{{akaunting_options.key}}"
+                    const key = "{{akaunting_options.key}}"
                     data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
                     data.owner_key = "{{organization.owner_key}}"
                     data.organization_key = "{{organization.key}}";

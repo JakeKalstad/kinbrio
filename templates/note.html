@@ -42,7 +42,7 @@ pub association_key: uuid::Uuid,
 
             const title = document.getElementById('title');
             post_form("add_note_form", "/note", data => {
-                let key = "{{note.key}}"
+                const key = "{{note.key}}"
                 data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
                 data.organization_key = "{{user.organization_key}}"
                 data.owner_key = "{{user.key}}"
@@ -55,7 +55,7 @@ pub association_key: uuid::Uuid,
                 data.updated = data.updated || 0;
                 return data;
             }, (response_text) => {
-                let object = JSON.parse(response_text);
+                const object = JSON.parse(response_text);
                 window.location.href = `/note/${object.key}`
             });
         })

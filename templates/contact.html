@@ -192,7 +192,7 @@ Contact{% endif %}{% endblock %}
       })
       {% endif %}
       post_form("add_contact_form", "/contact", data => {
-        let key = "{{contact.key}}"
+        const key = "{{contact.key}}"
         data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
         data.organization_key = "{{user.organization_key}}"
         data.external_accounting_id = data.external_accounting_id || "{{contact.external_accounting_id}}"
@@ -225,7 +225,7 @@ Contact{% endif %}{% endblock %}
         data.updated = data.updated || 0;
         return data;
       }, (response_text) => {
-        let object = JSON.parse(response_text);
+        const object = JSON.parse(response_text);
         window.location.href = `/contact/${object.key}`
       });
     })

@@ -76,7 +76,7 @@
       document.getElementById("start").value = (start == 0 ? new Date() : new Date(start * 1000)).toISOString().split('T')[0]
       console.dir({ y: new Date(start * 1000), z: new Date(start) })
       post_form("add_task_form", "/task", data => {
-        let key = "{{task.key}}"
+        const key = "{{task.key}}"
         data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
         data.organization_key = "{{user.organization_key}}"
         data.owner_key = "{{user.key}}"
@@ -93,7 +93,7 @@
         data.updated = data.updated || 0;
         return data;
       }, (response_text) => {
-        let object = JSON.parse(response_text);
+        const object = JSON.parse(response_text);
         window.location.href = `/task/${object.key}`
       });
     })

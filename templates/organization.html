@@ -64,7 +64,7 @@
 <script>
     window.addEventListener('load', function () {
         post_form("organization_form", "/organization", data => {
-            let key = "{{organization.key}}"
+            const key = "{{organization.key}}"
             data.key = key == "" ? "00000000-0000-0000-0000-000000000000" : key
             data.owner_key = "{{organization.owner_key}}"
             data.external_accounting_id = data.external_accounting_id ||"{{organization.external_accounting_id}}"
@@ -77,7 +77,7 @@
             data.updated = parseInt("{{organization.updated}}") || 0;
             return data;
         }, (response_text) => {
-            let object = JSON.parse(response_text);
+            const object = JSON.parse(response_text);
             window.location.href = `/organization/${object.key}`
         });
     })

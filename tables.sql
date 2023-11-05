@@ -218,18 +218,18 @@ CREATE TABLE IF NOT EXISTS akaunting_options (
 );
 
 
-GRANT ALL ON ALL TABLES IN SCHEMA public TO cloudify2;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO projectmanager;
 
-delete from akaunting_options;
-delete from boards           ;
-delete from contacts         ;
-delete from entitys          ;
-delete from files            ;
-delete from mile_stones      ;
-delete from notes            ;
-delete from organization     ;
-delete from projects         ;
-delete from rooms            ;
-delete from service_items    ;
-delete from tasks            ;
-delete from users;
+-- delete from akaunting_options;
+-- delete from boards           ;
+-- delete from contacts         ;
+-- delete from entitys          ;
+-- delete from files            ;
+-- delete from mile_stones      ;
+-- delete from notes            ;
+-- delete from organization     ;
+-- delete from projects         ;
+-- delete from rooms            ;
+-- delete from service_items    ;
+-- delete from tasks            ;
+-- delete from users;
